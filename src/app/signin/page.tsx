@@ -156,7 +156,7 @@ export default function SignIn() {
                   </div>
                 </div>
                 
-                <Link className="underline text-right text-sm hover:text-blue-600" href="/forgot-password">
+                <Link className="underline text-right text-sm hover:text-blue-900" href="/forgot-password">
                   Lupa kata sandi?
                 </Link>
                 
@@ -173,7 +173,7 @@ export default function SignIn() {
 
                 <div className="justify-center justify-items-center">
                   <p>
-                    Belum memiliki akun? <Link href="/signup" className="underline hover:text-blue-600">Daftar Disini</Link>
+                    Belum memiliki akun? <Link href="/signup" className="underline hover:text-blue-900">Daftar Disini</Link>
                   </p>
                 </div>
               </form>
@@ -181,7 +181,7 @@ export default function SignIn() {
           </div>
 
           <div className="flex-1 bg-gradient-to-br from-sky-800 to-sky-600 rounded-lg shadow hidden lg:flex flex-col gap-3 p-4">
-            <h1 className="text-center mt-20 text-transparent stroke text-[7rem] xl:text-[12rem] font-bold">PPDB</h1>
+            <h1 className="text-center mt-20 text-white text-[7rem] xl:text-[12rem] font-bold">PPDB</h1>
           </div>
         </div>
       </div>

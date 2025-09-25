@@ -1,5 +1,7 @@
 'use client';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretLeft } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -108,12 +110,12 @@ export default function SekolahPage() {
   return (
     <div className="w-full min-h-screen flex flex-col bg-blue-900 px-4 py-10 md:px-20">
       <div className="w-full flex-1 rounded-lg shadow-lg bg-white flex flex-col items-center justify-center font-poppins p-6 md:p-12 lg:p-16">
-        
+
         {/* Header */}
         <div className="h-fit w-full mb-6 flex flex-wrap items-center">
           <div className="flex justify-center items-center">
             <Link href="/jenjang" className="p-2 rounded-lg bg-neutral-100 transition-all hover:bg-neutral-200">
-              <i className="fa-solid fa-caret-left"></i>
+              <FontAwesomeIcon icon={faCaretLeft} />
             </Link>
           </div>
           <div className="flex-1 text-start md:text-center ml-2 md:ml-0 mt-2 md:mt-0">
