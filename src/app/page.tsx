@@ -42,7 +42,7 @@ export default function Home() {
               href="/welcome"
               className="w-fit p-4 m-0 md:m-2 bg-neutral-500 text-white rounded-2xl text-sm font-medium hover:bg-neutral-600 transition-colors"
             >
-              <i className="fa-solid fa-bolt-lightning"></i> Mulai Perjalananmu!
+              <i className="fa-solid fa-bolt-lightning" aria-hidden="true"></i> Mulai Perjalananmu!
             </Link>
           </div>
         </div>

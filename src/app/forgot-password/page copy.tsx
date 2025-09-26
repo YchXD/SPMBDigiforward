@@ -15,7 +15,6 @@ export default function ForgotPassword() {
   const [formData, setFormData] = useState({
     email: '',
     otp: '',
-    phone: '',
     newPassword: '',
     confirmPassword: ''
   });
@@ -34,8 +33,6 @@ export default function ForgotPassword() {
   const matchValid = formData.newPassword && formData.newPassword === formData.confirmPassword;
   const isPasswordValid = lengthValid && caseValid && numberValid && matchValid;
 
-  const [method, setMethod] = useState<'email' | 'whatsapp'>('email');
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -47,11 +44,7 @@ export default function ForgotPassword() {
       switch (step) {
         case 1:
           endpoint = '/api/forgot-password-send.php';
-          payload = {
-            method,
-            email: method === 'email' ? formData.email : null,
-            phone: method === 'whatsapp' ? formData.phone : null,
-          };
+          payload = { email: formData.email };
           break;
         case 2:
           endpoint = '/api/forgot-password-verify.php';
@@ -74,7 +67,7 @@ export default function ForgotPassword() {
           payload = { newPassword: formData.newPassword };
           break;
       }
-      console.log("Sending payload:", payload);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,55 +135,24 @@ export default function ForgotPassword() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {step === 1 && (
             <>
-              <div className="flex gap-4 mb-4">
-                <button
-                  type="button"
-                  className={`flex-1 py-2 rounded-lg border ${method === 'email' ? 'bg-blue-900 text-white' : 'bg-gray-100'}`}
-                  onClick={() => setMethod('email')}
-                >
-                  Via Email
-                </button>
-                <button
-                  type="button"
-                  className={`flex-1 py-2 rounded-lg border ${method === 'whatsapp' ? 'bg-green-600 text-white' : 'bg-gray-100'}`}
-                  onClick={() => setMethod('whatsapp')}
-                >
-                  Via WhatsApp
-                </button>
-              </div>
-
-              {method === 'email' ? (
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Masukkan email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              ) : (
-                <input
-                  type="text"
-                  name="phone"
-                  placeholder="Masukkan nomor WhatsApp"
-                  value={(formData as any).phone || ""}
-                  onChange={handleInputChange}
-                  className="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-                  required
-                />
-              )}
-
+              <input
+                type="email"
+                name="email"
+                placeholder="Masukkan email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-blue-900 text-white py-2 rounded-lg hover:bg-blue-800 transition disabled:opacity-50 mt-4"
+                className="bg-blue-900 text-white py-2 rounded-lg hover:bg-blue-800 transition disabled:opacity-50"
               >
                 {isLoading ? 'Mengirim...' : 'Kirim OTP'}
               </button>
             </>
           )}
-
 
           {step === 2 && (
             <>

@@ -18,15 +18,24 @@ if (!$input) {
 $newPassword = $input['newPassword'] ?? '';
 $email = $_SESSION['reset_email'] ?? null;
 $user_id = $_SESSION['reset_user_id'] ?? null;
+$method = $_SESSION['reset_method'] ?? null;
 
 if (empty($newPassword)) {
     echo json_encode(['success' => false, 'message' => 'Password baru harus diisi']);
     exit();
 }
 
-if (!$email || !$user_id || empty($_SESSION['otp_verified'])) {
+if (!$user_id || empty($_SESSION['otp_verified'])) {
     echo json_encode(['success' => false, 'message' => 'Session tidak valid']);
     exit();
+}
+
+if ($method === 'email') {
+    $email = $_SESSION['reset_email'] ?? null;
+    if (!$email) {
+        echo json_encode(['success' => false, 'message' => 'Session tidak valid']);
+        exit();
+    }
 }
 
 try {

@@ -17,12 +17,19 @@ if (!$input) {
 
 $otp = trim($input['otp'] ?? '');
 $user_id = $_SESSION['reset_user_id'] ?? null;
+$method  = $_SESSION['reset_method'] ?? null;
 
 if (empty($otp)) {
     echo json_encode(['success' => false, 'message' => 'OTP harus diisi']);
     exit();
 }
+$user_id = $_SESSION['reset_user_id'] ?? null;
+$_SESSION['reset_method'] = $method; 
+$_SESSION['otp_verified'] = true;
 
+if ($method === 'email') {
+    $_SESSION['reset_email'] = $email;
+}
 if (!$user_id) {
     echo json_encode(['success' => false, 'message' => 'Session tidak valid']);
     exit();

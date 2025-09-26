@@ -14,7 +14,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: 'http://localhost/project/api/:path*',
+        destination: 'http://localhost/ppdb-copy/api/:path*',
       },
     ];
   },

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 declare global {
   interface Window {
@@ -92,14 +93,37 @@ export default function SignIn() {
       setIsLoading(false);
     }
   };
-
+  interface User {
+      id: number;
+      email: string;
+    }
+    const [user, setUser] = useState<User | null>(null);
+    const [authResult, setAuthResult] = useState<any>(null);
+    useEffect(() => {
+      checkAuth();
+    }, []);
+  
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/check-auth.php');
+        const result = await response.json();
+  
+        if (result.success) {
+          setAuthResult(result);
+          router.push('/dashboard');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        router.push('/welcome');
+      }
+    };
   return (
     <div className="w-full min-h-screen flex flex-col bg-blue-900 px-4 py-10 md:px-20">
       <div className="w-full flex-1 rounded-lg shadow-lg bg-white flex flex-col items-center justify-center font-poppins p-6 md:p-12 lg:p-16">
         {/* Header */}
         <div className="h-fit w-full mb-6 flex items-center">
           <Link href="/welcome" className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 transition">
-            <i className="fa-solid fa-caret-left"></i>
+            <i className="fa-solid fa-caret-left" aria-hidden="true"></i>
           </Link>
         </div>
 
@@ -121,7 +145,7 @@ export default function SignIn() {
                 <div>
                   <p className="text-neutral-400 text-sm">Email</p>
                   <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
-                    <i className="fa-solid fa-envelope p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
+                    <i className="fa-solid fa-envelope p-2 h-full border-r border-neutral-400 text-neutral-400" aria-hidden="true"></i>
                     <input 
                       type="email" 
                       name="email" 
@@ -137,7 +161,7 @@ export default function SignIn() {
                 <div>
                   <p className="text-neutral-400 text-sm">Password</p>
                   <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
-                    <i className="fa-solid fa-key p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
+                    <i className="fa-solid fa-key p-2 h-full border-r border-neutral-400 text-neutral-400" aria-hidden="true"></i>
                     <input 
                       type={showPassword ? 'text' : 'password'}
                       name="password"
@@ -151,7 +175,7 @@ export default function SignIn() {
                       onClick={() => setShowPassword(!showPassword)} 
                       className="px-3 text-neutral-500 hover:text-neutral-700"
                     >
-                      <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>
+                      <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'} aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>

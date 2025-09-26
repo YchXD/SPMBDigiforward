@@ -18,7 +18,8 @@ CREATE TABLE users (
     tanggal_lahir DATE NOT NULL,
     wa VARCHAR(20) NOT NULL,
     nik VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    sekolah_id INT
 );
 INSERT INTO sekolah (nama, alamat, telp, deskripsi, gambar, jenjang, kode_lemdik) VALUES
 ('SMK Antartika 1 Sidoarjo', 'Jl. Raya Sidoarjo No.1, Sidoarjo, Jawa Timur', '031-1234567', 'SMK Antartika 1 Sidoarjo berlokasi di pusat kota Sidoarjo.', 'https://radarjatim.id/wp-content/uploads/2024/07/WhatsApp-Image-2024-07-15-at-10.48.34.jpeg', 'SMK', 1),

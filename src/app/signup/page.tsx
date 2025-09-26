@@ -19,13 +19,14 @@ export default function SignUp() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const lemdik = searchParams.get('lemdik');
-  
+
   const [step, setStep] = useState(1);
   const [sekolahData, setSekolahData] = useState<Sekolah | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [error, setError] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -45,7 +46,7 @@ export default function SignUp() {
       router.push('/jenjang');
       return;
     }
-    
+
     fetchSekolahData(lemdik);
   }, [lemdik, router]);
 
@@ -53,7 +54,7 @@ export default function SignUp() {
     try {
       const response = await fetch(`/api/sekolah-detail.php?lemdik=${lemdikCode}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setSekolahData(data.sekolah);
       } else {
@@ -71,6 +72,7 @@ export default function SignUp() {
       ...prev,
       [name]: value
     }));
+    setError(null);
   };
 
   const updateWA = () => {
@@ -80,9 +82,32 @@ export default function SignUp() {
     }));
   };
 
+  const checkEmail = async (email: string) => {
+    try {
+      const res = await fetch(`/api/check-email.php?email=${encodeURIComponent(email)}`);
+      const result = await res.json();
+      if (!result.available) {
+        setError("Email sudah terdaftar");
+      }
+    } catch (err) {
+      console.error("Error checking email", err);
+    }
+  };
+
   useEffect(() => {
     updateWA();
   }, [waCode, waNumber]);
+  useEffect(() => {
+    if (!formData.email.trim()) {
+      setError(null);
+      return;
+    }
+    const timeout = setTimeout(() => {
+      checkEmail(formData.email);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  },[formData.email])
 
   // Password validation
   const lengthValid = formData.password.length >= 8 && formData.password.length <= 16;
@@ -108,7 +133,7 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password || !formData.nama || !formData.tanggal_lahir || !formData.wa || !formData.nik) {
       if (typeof window !== 'undefined' && window.Swal) {
         window.Swal.fire({
@@ -195,9 +220,9 @@ export default function SignUp() {
         <div className="w-full flex-1 flex flex-wrap gap-4 justify-center">
           {/* Form */}
           <div className="flex-1 bg-white p-5 rounded-lg flex flex-col items-center gap-2 font-roboto">
-            <img 
-              src="/images/favicon.png" 
-              className="w-20 shadow-md p-2 rounded-lg" 
+            <img
+              src="/images/favicon.png"
+              className="w-20 shadow-md p-2 rounded-lg"
               alt="Logo"
             />
             <h1 className="text-3xl font-bold text-neutral-700">Satu Langkah Lagi..</h1>
@@ -215,15 +240,16 @@ export default function SignUp() {
                       <p className="text-neutral-400 text-sm">Email</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <i className="fa-solid fa-envelope p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
-                        <input 
-                          type="email" 
-                          name="email" 
+                        <input
+                          type="email"
+                          name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="flex-1 px-3 py-2 outline-none text-sm" 
-                          required 
+                          className="flex-1 px-3 py-2 outline-none text-sm"
+                          required
                         />
                       </div>
+                      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
                     </div>
 
                     {/* Password */}
@@ -231,17 +257,17 @@ export default function SignUp() {
                       <p className="text-neutral-400 text-sm">Password</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <i className="fa-solid fa-key p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
-                        <input 
+                        <input
                           type={showPassword ? 'text' : 'password'}
                           name="password"
                           value={formData.password}
                           onChange={handleInputChange}
-                          className="flex-1 px-3 py-2 outline-none text-sm" 
-                          required 
+                          className="flex-1 px-3 py-2 outline-none text-sm"
+                          required
                         />
-                        <button 
-                          type="button" 
-                          onClick={() => setShowPassword(!showPassword)} 
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
                           className="px-3 text-neutral-500 hover:text-neutral-700"
                         >
                           <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>
@@ -273,20 +299,19 @@ export default function SignUp() {
                     {/* Konfirmasi Password */}
                     <div>
                       <p className="text-neutral-400 text-sm">Konfirmasi Password</p>
-                      <div className={`flex items-center border rounded-lg overflow-hidden relative ${
-                        formData.confirmPassword && formData.confirmPassword !== formData.password ? 'border-red-500' : 'border-neutral-400'
-                      }`}>
+                      <div className={`flex items-center border rounded-lg overflow-hidden relative ${formData.confirmPassword && formData.confirmPassword !== formData.password ? 'border-red-500' : 'border-neutral-400'
+                        }`}>
                         <i className="fa-solid fa-key p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
-                        <input 
+                        <input
                           type={showConfirmPassword ? 'text' : 'password'}
                           name="confirmPassword"
                           value={formData.confirmPassword}
                           onChange={handleInputChange}
                           className="flex-1 px-3 py-2 outline-none text-sm"
                         />
-                        <button 
-                          type="button" 
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           className="px-3 text-neutral-500 hover:text-neutral-700"
                         >
                           <i className={showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>
@@ -298,7 +323,7 @@ export default function SignUp() {
                     </div>
 
                     {/* Tombol Lanjut */}
-                    <button 
+                    <button
                       type="button"
                       onClick={goNext}
                       disabled={!isStep1Valid}
@@ -317,13 +342,13 @@ export default function SignUp() {
                       <p className="text-neutral-400 text-sm">Nama Lengkap Calon Siswa</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <i className="fa-solid fa-user p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
-                        <input 
-                          type="text" 
-                          name="nama" 
+                        <input
+                          type="text"
+                          name="nama"
                           value={formData.nama}
                           onChange={handleInputChange}
-                          className="flex-1 px-3 py-2 outline-none text-sm" 
-                          required 
+                          className="flex-1 px-3 py-2 outline-none text-sm"
+                          required
                         />
                       </div>
                     </div>
@@ -333,13 +358,13 @@ export default function SignUp() {
                       <p className="text-neutral-400 text-sm">Tanggal Lahir Calon Siswa</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <i className="fa-solid fa-calendar-days p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
-                        <input 
-                          type="date" 
-                          name="tanggal_lahir" 
+                        <input
+                          type="date"
+                          name="tanggal_lahir"
                           value={formData.tanggal_lahir}
                           onChange={handleInputChange}
-                          className="flex-1 px-3 py-2 outline-none text-sm" 
-                          required 
+                          className="flex-1 px-3 py-2 outline-none text-sm"
+                          required
                         />
                       </div>
                     </div>
@@ -348,9 +373,9 @@ export default function SignUp() {
                     <div>
                       <p className="text-neutral-400 text-sm">Nomor WhatsApp Ortu/Wali</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
-                        <select 
-                          value={waCode} 
-                          onChange={(e) => setWaCode(e.target.value)} 
+                        <select
+                          value={waCode}
+                          onChange={(e) => setWaCode(e.target.value)}
                           className="px-2 py-2 border-r bg-gray-50 text-lg outline-none cursor-pointer"
                         >
                           <option value="+62">🇮🇩</option>
@@ -358,12 +383,12 @@ export default function SignUp() {
                           <option value="+65">🇸🇬</option>
                         </select>
                         <span className="px-3 py-2 border-r text-sm text-neutral-600 bg-gray-50">{waCode}</span>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           className="flex-1 px-3 py-2 text-sm outline-none"
-                          value={waNumber} 
+                          value={waNumber}
                           onChange={(e) => setWaNumber(e.target.value.replace(/[^0-9]/g, ''))}
-                          required 
+                          required
                         />
                       </div>
                     </div>
@@ -373,22 +398,22 @@ export default function SignUp() {
                       <p className="text-neutral-400 text-sm">NIK Calon Siswa</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <i className="fa-solid fa-id-card p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
-                        <input 
-                          type="text" 
-                          name="nik" 
+                        <input
+                          type="text"
+                          name="nik"
                           value={formData.nik}
                           onChange={(e) => {
                             const value = e.target.value.replace(/[^0-9]/g, '');
                             setFormData(prev => ({ ...prev, nik: value }));
                           }}
                           className="flex-1 px-3 py-2 outline-none text-sm"
-                          required 
+                          required
                         />
                       </div>
                     </div>
 
                     {/* Tombol Daftar */}
-                    <button 
+                    <button
                       type="submit"
                       disabled={isLoading}
                       className="w-full bg-[#4f5686] hover:bg-[#41466e] text-white py-2 rounded-lg font-medium transition mt-4 disabled:opacity-50"
@@ -405,9 +430,9 @@ export default function SignUp() {
           <div className="flex-1 bg-gradient-to-br from-sky-800 to-sky-600 rounded-lg shadow hidden lg:flex flex-col gap-3 relative">
             <h1 className="text-center opacity-70 text-transparent stroke text-[7rem] xl:text-[12rem] font-bold h-[1em] z-[0]">PPDB</h1>
             <div className="w-full p-2 justify-center absolute mt-15 xl:mt-30 flex flex-col items-center">
-              <img 
-                src="https://ppdb.telkomschools.sch.id/image/signUp/background_title.png" 
-                className="w-40 xl:w-73 absolute z-[1]" 
+              <img
+                src="https://ppdb.telkomschools.sch.id/image/signUp/background_title.png"
+                className="w-40 xl:w-73 absolute z-[1]"
                 alt="Background"
               />
               <p className="text-white z-[2] font-bold relative text-sm xl:text-lg">
@@ -415,9 +440,9 @@ export default function SignUp() {
               </p>
             </div>
             <div className="w-full min-h-30 relative z-[1] flex flex-col items-center justify-center">
-              <img 
-                src={sekolahData.gambar} 
-                className="max-w-50 xl:max-w-md rounded-lg border border-5 border-neutral-200" 
+              <img
+                src={sekolahData.gambar}
+                className="max-w-50 xl:max-w-md rounded-lg border border-5 border-neutral-200"
                 alt="Sekolah"
               />
             </div>

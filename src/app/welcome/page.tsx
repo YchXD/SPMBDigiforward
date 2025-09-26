@@ -1,16 +1,44 @@
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Welcome() {
+  interface User {
+    id: number;
+    email: string;
+  }
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [authResult, setAuthResult] = useState<any>(null);
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('/api/check-auth.php');
+      const result = await response.json();
+
+      if (result.success) {
+        setAuthResult(result);
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+      router.push('/welcome');
+    }
+  };
   return (
     <div className="w-full min-h-screen flex flex-col bg-blue-900 px-4 py-10 md:px-20">
       <div className="w-full flex-1 rounded-lg shadow-lg bg-white flex flex-col items-center justify-center font-poppins p-6 md:p-12 lg:p-16 relative">
-        <Image 
-          src="https://smkantartika2-sda.sch.id/wp-content/uploads/2023/09/favicon.png" 
-          alt="SMK Antartika 2 Logo" 
-          width={120} 
-          height={120} 
-          className="w-30 mb-10" 
+        <Image
+          src="https://smkantartika2-sda.sch.id/wp-content/uploads/2023/09/favicon.png"
+          alt="SMK Antartika 2 Logo"
+          width={120}
+          height={120}
+          className="w-30 mb-10"
         />
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center">Selamat Datang!</h1>
         <p className="text-neutral-600 text-center mt-3 max-w-md">
@@ -30,8 +58,8 @@ export default function Welcome() {
           >
             Daftar
           </Link>
-          <Link 
-            href="/signin" 
+          <Link
+            href="/signin"
             className="flex-1 p-3 bg-[#da3732] rounded-lg cursor-pointer text-center text-white hover:bg-[#b52a26] transition z-10"
           >
             Masuk
