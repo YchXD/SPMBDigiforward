@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import jurusan from '../jurusan/page';
 
 interface Sekolah {
   nama: string;
@@ -15,10 +16,12 @@ declare global {
   }
 }
 
-export default function SignUp() {
+function SignUpContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const lemdik = searchParams.get('lemdik');
+  //const lemdik = searchParams.get('lemdik');
+  const lemdik = 2;
+  const jurusan = searchParams.get('jurusan');
 
   const [step, setStep] = useState(1);
   const [sekolahData, setSekolahData] = useState<Sekolah | null>(null);
@@ -35,7 +38,8 @@ export default function SignUp() {
     tanggal_lahir: '',
     wa: '',
     nik: '',
-    lemdik: lemdik || ''
+    lemdik: lemdik || '',
+    jurusan: jurusan || ''
   });
 
   const [waCode, setWaCode] = useState('+62');
@@ -43,14 +47,14 @@ export default function SignUp() {
 
   useEffect(() => {
     if (!lemdik) {
-      router.push('/jenjang');
+      router.push('/jurusan');
       return;
     }
 
     fetchSekolahData(lemdik);
   }, [lemdik, router]);
 
-  const fetchSekolahData = async (lemdikCode: string) => {
+  const fetchSekolahData = async (lemdikCode: number) => {
     try {
       const response = await fetch(`/api/sekolah-detail.php?lemdik=${lemdikCode}`);
       const data = await response.json();
@@ -58,11 +62,11 @@ export default function SignUp() {
       if (data.success) {
         setSekolahData(data.sekolah);
       } else {
-        router.push('/jenjang');
+        router.push('/jurusan');
       }
     } catch (error) {
       console.error('Error fetching sekolah data:', error);
-      router.push('/jenjang');
+      router.push('/jurusan');
     }
   };
 
@@ -212,7 +216,7 @@ export default function SignUp() {
       <div className="w-full flex-1 rounded-lg shadow-lg bg-white flex flex-col items-center justify-center font-poppins p-6 md:p-12 lg:p-16">
         {/* Header */}
         <div className="h-fit w-full mb-6 flex items-center">
-          <Link href="/jenjang" className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 transition">
+          <Link href="/jurusan" className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 transition">
             <i className="fa-solid fa-caret-left"></i>
           </Link>
         </div>
@@ -450,5 +454,13 @@ export default function SignUp() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignUp() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+      <SignUpContent />
+    </Suspense>
   );
 }

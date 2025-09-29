@@ -53,7 +53,7 @@ export default function Welcome() {
 
           {/* Tombol */}
           <Link
-            href="/jenjang"
+            href="/jurusan"
             className="flex-1 p-3 bg-[#4f5686] rounded-lg cursor-pointer text-center text-white hover:bg-[#41466e] transition z-10"
           >
             Daftar

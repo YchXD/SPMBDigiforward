@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "concurrently \"next dev\" \"node whatsapp-service/server.js\"",
+    "dev": "concurrently \"next dev\" \"node whatsapp-service/server.js\" \"lt -p 80\"",
     "build": "next build",
-    "start": "next start",
+    "start": "concurrently \"next start\" \"node whatsapp-service/server.js\" \"lt -p 80\"",
     "lint": "next lint",
     "php-server": "php -S localhost:8080 -t api/"
   },
@@ -10,6 +10,9 @@
     "@fortawesome/fontawesome-svg-core": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
+    "html2canvas": "^1.4.1",
+    "html2canvas-pro": "^1.5.11",
+    "mime": "^4.1.0",
     "next": "^15.5.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

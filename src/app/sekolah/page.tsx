@@ -3,7 +3,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 interface Sekolah {
@@ -22,8 +22,7 @@ declare global {
     Swal: any;
   }
 }
-
-export default function SekolahPage() {
+function SekolahPageContent() {
   const searchParams = useSearchParams();
   const jenjang = searchParams.get('jenjang');
   const [sekolahList, setSekolahList] = useState<Sekolah[]>([]);
@@ -209,4 +208,12 @@ export default function SekolahPage() {
       </div>
     </div>
   );
+}
+
+export default function SekolahPage() {
+  return (
+      <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+        <SekolahPageContent />
+      </Suspense>
+    );
 }

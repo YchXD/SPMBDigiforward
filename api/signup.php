@@ -22,9 +22,10 @@ $tanggal_lahir = $input['tanggal_lahir'] ?? '';
 $wa = $input['wa'] ?? '';
 $nik = $input['nik'] ?? '';
 $lemdik = $input['lemdik'] ?? '';
+$jurusan = $input['jurusan'] ?? '';
 
 // Validasi input
-if (empty($email) || empty($password) || empty($nama) || empty($tanggal_lahir) || empty($wa) || empty($nik) || empty($lemdik)) {
+if (empty($email) || empty($password) || empty($nama) || empty($tanggal_lahir) || empty($wa) || empty($nik) || empty($lemdik) || empty($jurusan)) {
     echo json_encode(['success' => false, 'message' => 'Semua field harus diisi']);
     exit();
 }
@@ -62,10 +63,10 @@ try {
     }
 
     // Insert data user
-    $stmt = $pdo->prepare("INSERT INTO users (email, password, nama, tanggal_lahir, wa, nik, sekolah_id) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO users (email, password, nama, tanggal_lahir, wa, nik, sekolah_id, jurusan) 
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     
-    if ($stmt->execute([$email, $hashedPassword, $nama, $tanggal_lahir, $wa, $nik, $sekolah_id])) {
+    if ($stmt->execute([$email, $hashedPassword, $nama, $tanggal_lahir, $wa, $nik, $sekolah_id, $jurusan])) {
         $_SESSION['user'] = [
             'id' => $pdo->lastInsertId(),
             'email' => $email,

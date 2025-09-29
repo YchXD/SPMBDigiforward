@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: process.env.NODE_ENV !== "development" ? "export" : "standalone",
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.imgur.com" },
@@ -8,7 +9,10 @@ const nextConfig = {
       { protocol: "https", hostname: "radarjatim.id" },
       { protocol: "https", hostname: "smaantarda.sch.id" },
       { protocol: "https", hostname: "lh5.googleusercontent.com" },
+      { protocol: "https", hostname: "files.catbox.moe" },
     ],
+    loader: 'custom',
+    loaderFile: '/src/app/files/[...path]/route.ts',
   },
   async rewrites() {
     return [

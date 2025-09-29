@@ -1,5 +1,5 @@
 <?php
-$host = "127.0.0.1"; // lebih aman pakai IP
+$host = "127.0.0.1"; 
 $db   = "antartika";
 $user = "root";
 $pass = "";

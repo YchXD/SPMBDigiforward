@@ -31,7 +31,7 @@ export default function Home() {
               <FontAwesomeIcon icon={faGraduationCap} className='w-4' /> Selamat datang di
             </p>
             <h1 className="text-2xl md:text-4xl font-bold leading-none max-w-80 md:max-w-120 text-center md:text-start font-[poppins]">
-              Portal Penerimaan Peserta Didik Baru (PPDB)
+              Portal Penerimaan Peserta Didik Baru (SPMB)
             </h1>
             <p className="text-md md:text-lg font-bold">SMK Antartika 2 Sidoarjo</p>
             <br />
@@ -48,10 +48,10 @@ export default function Home() {
         </div>
         <div className="flex-1 p-3 flex flex-col items-center justify-center">
           <Image
-            src="https://i.imgur.com/hM6wOj5.png"
-            alt="PPDB Illustration"
-            width={800}
-            height={700}
+            src="https://files.catbox.moe/oovcbl.png"
+            alt="SPMB Illustration"
+            width={300}
+            height={400}
             className="max-w-full h-auto"
           />
         </div>

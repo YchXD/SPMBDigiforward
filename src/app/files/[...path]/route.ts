@@ -1,0 +1,30 @@
+import { promises as fs } from "fs";
+import path from "path";
+import { NextResponse } from "next/server";
+
+export async function GET(
+  req: Request,
+  context: { params: Promise<{ path: string[] }> }
+) {
+  try {
+    const { path: filePathArr } = await context.params;
+    const filePath = path.join(process.cwd(), "uploads", ...filePathArr);
+    console.log("Mau baca:", filePath);
+
+    const fileBuffer = await fs.readFile(filePath);
+
+    const ext = path.extname(filePath).toLowerCase();
+    let contentType = "application/octet-stream";
+    if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
+    if (ext === ".png") contentType = "image/png";
+    if (ext === ".pdf") contentType = "application/pdf";
+
+    return new NextResponse(new Uint8Array (fileBuffer), {
+      status: 200,
+      headers: { "Content-Type": contentType },
+    });
+  } catch (err: any) {
+    console.error("File error:", err.message);
+    return new Response("File not found", { status: 404 });
+  }
+}

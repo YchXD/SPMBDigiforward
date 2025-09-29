@@ -15,7 +15,7 @@
 
     <link rel="icon" type="image/x-icon" href="./public/images/favicon (1).png">
 
-    <title>PPDB - SMK Antartika 2 Sidoarjo</title>
+    <title>SPMB - SMK Antartika 2 Sidoarjo</title>
 
 </head>
 

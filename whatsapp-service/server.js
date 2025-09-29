@@ -51,7 +51,7 @@ app.get("/send-otp", async (req, res) => {
     }
 
     try {
-        await sock.sendMessage(`${phone}@s.whatsapp.net`, { text: `Your OTP is: ${otp}` });
+        await sock.sendMessage(`${phone}@s.whatsapp.net`, { text: `Kode OTP kamu adalah: ${otp} jangan bagikan ke siapapun!` });
         res.json({ success: true, message: "OTP sent via WhatsApp" });
     } catch (err) {
         console.error("Failed to send OTP:", err);
