@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: process.env.NODE_ENV !== "development" ? "export" : "standalone",
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.imgur.com" },
@@ -11,8 +10,6 @@ const nextConfig = {
       { protocol: "https", hostname: "lh5.googleusercontent.com" },
       { protocol: "https", hostname: "files.catbox.moe" },
     ],
-    loader: 'custom',
-    loaderFile: '/src/app/files/[...path]/route.ts',
   },
   async rewrites() {
     return [
@@ -21,6 +18,10 @@ const nextConfig = {
         destination: 'http://localhost/ppdb-copy/api/:path*',
       },
     ];
+  },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, path: false };
+    return config;
   },
 };
 

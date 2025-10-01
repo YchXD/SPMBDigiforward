@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from "next/router";
+
 
 interface Jalur {
   id: number;
@@ -22,6 +24,7 @@ export default function JalurPage() {
   const [jalurList, setJalurList] = useState<Jalur[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedJalur, setSelectedJalur] = useState<number | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetchJalur();
@@ -82,7 +85,7 @@ export default function JalurPage() {
               icon: "success",
               confirmButtonText: "Ok"
             }).then(() => {
-              window.location.reload();
+              router.push("https://google.com");
             });
           } else {
             window.Swal.fire({

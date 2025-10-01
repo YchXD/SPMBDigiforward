@@ -5,8 +5,8 @@ $apiKey       = "cadf48d101d7384732586d934d3d4430";
 $productDetails  = "Pembayaran PPDB";
 $email           = "user@email.com";
 $phoneNumber     = "08123456789";
-$callbackUrl     = "https://yummy-kiwis-feel.loca.lt/ppdb-copy/api/callback.php";
-$returnUrl       = "http://localhost:3000/dashboard";
+$callbackUrl     = "https://b99cd46753c7.ngrok-free.app/ppdb-copy/api/callback.php";
+$returnUrl       = "http://localhost:3000/dashboard/datadiri";
 $signature = null;
 
 if (!isset($_SESSION['user'])) {
