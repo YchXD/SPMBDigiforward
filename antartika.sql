@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 01, 2025 at 01:24 PM
+-- Generation Time: Oct 09, 2025 at 02:18 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `antartika`
 --
-CREATE DATABASE IF NOT EXISTS `antartika` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `antartika`;
 
 -- --------------------------------------------------------
 
@@ -80,7 +78,12 @@ INSERT INTO `berkas` (`id`, `user_id`, `jenis_berkas`, `nama_file`, `path_file`,
 (44, 13, 'akta', 'Screenshot 2025-09-22 222707.png', '../uploads/berkas/13/akta_1759194749.png', 14632, 'pending', NULL, '2025-09-30 01:12:29'),
 (45, 13, 'ijazah', 'Screenshot 2025-09-27 150215.png', '../uploads/berkas/13/ijazah_1759194755.png', 297492, 'pending', NULL, '2025-09-30 01:12:35'),
 (46, 13, 'foto', 'Screenshot 2025-09-27 191028.png', '../uploads/berkas/13/foto_1759194765.png', 373119, 'pending', NULL, '2025-09-30 01:12:45'),
-(47, 13, 'rapor', 'Screenshot 2025-09-22 221832.png', '../uploads/berkas/13/rapor_1759194769.png', 42125, 'pending', NULL, '2025-09-30 01:12:49');
+(47, 13, 'rapor', 'Screenshot 2025-09-22 221832.png', '../uploads/berkas/13/rapor_1759194769.png', 42125, 'pending', NULL, '2025-09-30 01:12:49'),
+(48, 15, 'kk', 'Gray and White Simple Minimalist Car Sale Promotion Instagram Story.png', '..\\uploads\\berkas\\15\\kk_1759921476131.png', 396922, 'pending', NULL, '2025-10-08 11:04:36'),
+(52, 15, 'akta', 'download 3.jpg', '../uploads/berkas/15/akta_1759921628206.jpg', 99624, 'pending', NULL, '2025-10-08 11:07:08'),
+(53, 15, 'ijazah', 'download 3.jpg', '\\uploads\\berkas\\15\\ijazah_1759918678091.jpg', 99624, 'pending', NULL, '2025-10-08 10:17:58'),
+(54, 15, 'foto', '66d711b1dedb2b00119607f9-1987_f40_image04.png', '../uploads/berkas/15/foto_1759921671406.png', 893470, 'pending', NULL, '2025-10-08 11:07:51'),
+(55, 15, 'rapor', 'WhatsApp Image 2025-07-31 at 21.40.13_28e4c364.jpg', '\\uploads\\berkas\\15\\rapor_1759919527490.jpg', 21237, 'pending', NULL, '2025-10-08 10:32:07');
 
 -- --------------------------------------------------------
 
@@ -119,7 +122,8 @@ INSERT INTO `data_diri` (`id`, `user_id`, `nisn`, `tempat_lahir`, `jenis_kelamin
 (6, 9, '18416274154714087', 'Siapa yang tau', 'Laki-laki', 'Islam', 'siapa yang mau', '+6298187421681', 'cerita kita', 'sulit dicana', 'kalau disana', 'sulit dicerna', 'awww', '> 5 juta', '2025-09-28 15:16:54', '2025-09-28 15:16:54'),
 (7, 7, '22223', 'Siapa yang tau', 'Laki-laki', 'Islam', 'sidokare', '+6285746113606', 'cerita kita', 'sulit dicana', 'kalau disana', 'sulit dicerna', 'Yapping', '> 5 juta', '2025-09-29 00:15:37', '2025-09-29 00:15:37'),
 (8, 11, '9912394300400', 'Sidoarjo', 'Laki-laki', 'Islam', 'Kebonagung Rt 17 Rw 05, Sukodono Sidoarjo', '+6285746113606', 'SMPN1 SUKODONO SIDOARJO', 'ayah', 'ibu', 'asdaaa', 'dsdaa', '> 5 juta', '2025-09-29 05:49:29', '2025-09-29 05:49:29'),
-(9, 13, '351535535776', 'Surabaya', 'Laki-laki', 'Islam', 'sidoarjo', '+6281345266522', 'SMP', 'akkk', 'ibu', 'swasta', 'negeri', '1-3 juta', '2025-09-30 01:10:23', '2025-09-30 01:10:23');
+(9, 13, '351535535776', 'Surabaya', 'Laki-laki', 'Islam', 'sidoarjo', '+6281345266522', 'SMP', 'akkk', 'ibu', 'swasta', 'negeri', '1-3 juta', '2025-09-30 01:10:23', '2025-09-30 01:10:23'),
+(10, 15, '14214311124139', 'Surabaya', 'Laki-laki', 'Hindu', 'testing with next routes api!', '+621841874871248', 'SMP 2 Buduran Sidoarjo', 'Budi', 'sherin', 'swasta', 'negeri', '1-3 juta', '2025-10-08 09:37:45', '2025-10-08 09:41:32');
 
 -- --------------------------------------------------------
 
@@ -179,7 +183,8 @@ INSERT INTO `kartu` (`id`, `user_id`, `nomor_peserta`, `qr_code`, `status`, `gen
 (11, 9, '2025-00009', NULL, 'active', '2025-09-28 15:50:38'),
 (12, 7, '2025-00007', NULL, 'active', '2025-09-29 00:17:32'),
 (13, 11, '2025-00011', NULL, 'active', '2025-09-29 05:53:42'),
-(14, 13, '2025-00013', NULL, 'active', '2025-09-30 01:12:54');
+(14, 13, '2025-00013', NULL, 'active', '2025-09-30 01:12:54'),
+(15, 15, '2025-00015', NULL, 'active', '2025-10-08 11:08:17');
 
 -- --------------------------------------------------------
 
@@ -200,11 +205,14 @@ CREATE TABLE `password_resets` (
 --
 
 INSERT INTO `password_resets` (`id`, `user_id`, `otp`, `expires_at`, `created_at`) VALUES
-(15, 2, '891294', '2025-09-27 09:35:32', '2025-09-27 09:25:32'),
-(18, 2, '343395', '2025-09-28 07:38:02', '2025-09-28 07:28:02'),
-(20, 2, '744297', '2025-09-28 07:44:01', '2025-09-28 07:34:01'),
-(21, 2, '588281', '2025-09-28 07:44:38', '2025-09-28 07:34:38'),
-(27, 13, '680491', '2025-09-30 01:26:04', '2025-09-30 01:16:04');
+(27, 13, '680491', '2025-09-30 01:26:04', '2025-09-30 01:16:04'),
+(37, 5, '522398', '2025-10-09 11:42:43', '2025-10-09 04:32:42'),
+(38, 5, '779513', '2025-10-09 11:43:12', '2025-10-09 04:33:12'),
+(40, 7, '921150', '2025-10-09 11:51:24', '2025-10-09 04:41:24'),
+(41, 7, '160270', '2025-10-09 11:53:01', '2025-10-09 04:43:01'),
+(42, 7, '438156', '2025-10-09 12:06:16', '2025-10-09 04:56:16'),
+(43, 7, '491657', '2025-10-09 12:06:47', '2025-10-09 04:56:46'),
+(44, 7, '831694', '2025-10-09 12:07:17', '2025-10-09 04:57:17');
 
 -- --------------------------------------------------------
 
@@ -233,17 +241,22 @@ CREATE TABLE `pembayaran` (
 --
 
 INSERT INTO `pembayaran` (`id`, `user_id`, `jalur_id`, `invoice_id`, `amount`, `status`, `payment_method`, `payment_url`, `duitku_reference`, `paid_at`, `expired_at`, `created_at`, `updated_at`) VALUES
-(6, 2, 7, 'INV-2-7-1758957048', 175000.00, 'paid', NULL, 'https://sandbox.duitku.com/payment/INV-2-7-1758957048', NULL, NULL, '2025-09-28 00:10:48', '2025-09-27 07:10:48', '2025-09-27 07:49:35'),
 (7, 3, 3, 'INV-3-3-1758973589', 175000.00, 'paid', NULL, 'https://sandbox.duitku.com/payment/INV-3-3-1758973589', NULL, NULL, '2025-09-28 04:46:29', '2025-09-27 11:46:29', '2025-09-27 11:47:26'),
 (8, 4, 3, 'INV-4-3-1759033285', 175000.00, 'paid', NULL, 'https://sandbox.duitku.com/payment/INV-4-3-1759033285', NULL, NULL, '2025-09-28 21:21:25', '2025-09-28 04:21:25', '2025-09-28 04:21:36'),
-(9, 5, 8, 'INV-5-8-1759038375', 200000.00, 'paid', NULL, 'https://sandbox.duitku.com/payment/INV-5-8-1759038375', NULL, NULL, '2025-09-28 22:46:15', '2025-09-28 05:46:15', '2025-09-28 05:46:55'),
+(9, 5, 8, 'INV-5-8-1759038375', 200000.00, 'expired', NULL, 'https://sandbox.duitku.com/payment/INV-5-8-1759038375', NULL, NULL, '2025-09-28 22:46:15', '2025-09-28 05:46:15', '2025-10-09 11:34:25'),
 (44, 9, 3, 'INV-9-3-1759072365', 175000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS25188255FUDDO1KSUF7KD2', NULL, '2025-09-28 15:13:16', '2025-09-29 08:12:45', '2025-09-28 15:12:45', '2025-09-28 15:13:16'),
 (45, 10, 8, 'INV-10-8-1759075193', 200000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825K8QMOLIN12FTCOR', NULL, '2025-09-28 16:00:31', '2025-09-29 08:59:53', '2025-09-28 15:59:53', '2025-09-28 16:00:31'),
 (47, 7, 8, 'INV-7-8-1759104784', 200000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825IX14A4QLPZNVBIE', NULL, '2025-09-29 00:13:36', '2025-09-29 17:13:04', '2025-09-29 00:13:04', '2025-09-29 00:13:36'),
 (48, 11, 8, 'INV-11-8-1759124453', 1000000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825MIBQ70GWPRE8QER', NULL, '2025-09-29 05:43:30', '2025-09-29 22:40:53', '2025-09-29 05:40:53', '2025-09-29 05:43:30'),
 (49, 12, 1, 'INV-12-1-1759136849', 150000.00, 'pending', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS25188256MO0FAMDMIZ8EFJ', NULL, NULL, '2025-09-30 02:07:29', '2025-09-29 09:07:29', '2025-09-29 09:07:30'),
 (50, 13, 8, 'INV-13-8-1759193745', 1000000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825KXZ3ND1DM4S3B3S', NULL, NULL, '2025-09-30 17:55:45', '2025-09-30 00:55:45', '2025-09-30 01:02:42'),
-(51, 1, 3, 'INV-1-3-1759195802', 175000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS25188250KLDIA524OG5P5C', NULL, '2025-09-30 01:30:54', '2025-09-30 18:30:02', '2025-09-30 01:30:02', '2025-09-30 01:30:54');
+(51, 1, 3, 'INV-1-3-1759195802', 175000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS25188250KLDIA524OG5P5C', NULL, '2025-09-30 01:30:54', '2025-09-30 18:30:02', '2025-09-30 01:30:02', '2025-09-30 01:30:54'),
+(71, 15, 8, 'INV-15-8-1759834577137', 1000000.00, 'expired', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825ZJJ5X4NEUYH4XRY', NULL, NULL, '2025-10-08 03:56:17', '2025-10-07 10:56:17', '2025-10-07 10:56:29'),
+(72, 15, 8, 'INV-15-8-1759835913819', 1000000.00, 'expired', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS25188251PZ47W2NDPYU7CI', NULL, NULL, '2025-10-08 04:18:33', '2025-10-07 11:18:33', '2025-10-07 11:18:57'),
+(73, 15, 8, 'INV-15-8-1759839124093', 1000000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825IQE3YTASMBA68LE', NULL, '2025-10-07 12:12:38', '2025-10-08 05:12:04', '2025-10-07 12:12:04', '2025-10-08 12:00:22'),
+(78, 2, 7, 'INV-2-7-1760010206218', 175000.00, 'expired', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825IVLFCJVWC7B13WT', NULL, NULL, '2025-10-10 04:43:26', '2025-10-09 11:43:26', '2025-10-09 11:43:36'),
+(79, 2, 7, 'INV-2-7-1760010235333', 175000.00, 'expired', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS2518825MPJB1WHBE1LZGBB', NULL, NULL, '2025-10-10 04:43:55', '2025-10-09 11:43:55', '2025-10-09 11:59:21'),
+(80, 2, 7, 'INV-2-7-1760011179847', 175000.00, 'paid', NULL, 'https://sandbox.duitku.com/topup/v2/TopUpCreditCardPayment.aspx?reference=DS25188256PG1CDJBYXNC0KB', NULL, '2025-10-09 12:02:15', '2025-10-10 04:59:39', '2025-10-09 11:59:39', '2025-10-09 12:02:15');
 
 -- --------------------------------------------------------
 
@@ -290,7 +303,7 @@ CREATE TABLE `users` (
   `nik` varchar(20) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `sekolah_id` int NOT NULL,
-  `jurusan` enum('DKV','RPL','TM','TKJ','AKUTANSI') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
+  `jurusan` enum('DKV','RPL','TM','TKJ','AKUTANSI','PB') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -299,16 +312,18 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `email`, `password`, `nama`, `tanggal_lahir`, `wa`, `nik`, `created_at`, `sekolah_id`, `jurusan`) VALUES
 (1, 'ItzYchXD@gmail.com', '$2y$10$kzLvTT8AH.KBuikf.rRguuQ55vERlRJDBaoqs5ofAhgtc2y0jwa.2', 'beliau knp jir', '2005-12-24', '+628888888888', '3456789987654323456', '2025-09-26 10:44:03', 7, 'DKV'),
-(2, 'ych.cpm@gmail.com', '$2y$10$G6Bevq0P3R9YB3aC0oepwuZxlIZ024QUf2yo45DYd1rUZkgFXSKd2', 'Hai kakak', '2008-12-11', '+6287886820365', '9498488743', '2025-09-26 13:39:30', 3, 'DKV'),
-(3, 'ych08.cpm2@gmail.com', '$2y$10$JPrN1UZvBG1Xw60JCD0wbOD7K7wTOJW5wfhM21OQD1BeBSGXRRxsS', 'Yoeichi', '2008-11-13', '+6287886820365', '8787776418741741', '2025-09-27 11:43:35', 2, 'RPL'),
+(2, 'ych.cpm@gmail.com', '$2b$10$qUVImFL/RKi2g14NB9YVH.6cE7SG.D4OSjRgvNT.SJXI0FxjkrrW2', 'Hai kakak', '2008-12-11', '+6287886820365', '9498488743', '2025-09-26 13:39:30', 3, 'DKV'),
+(3, 'ych08.cpm2@gmail.com', '$2b$10$RIiSlRGXus9LBF7PsttQtOihDqGyy7NwigfwOyrgYgn/BO0ap.AoW', 'Yoeichi', '2008-11-13', '+6287886820365', '8787776418741741', '2025-09-27 11:43:35', 2, 'RPL'),
 (4, 'Yoeichi_08@ymail.com', '$2y$10$U6JQiNj0pJbtT0INCF/zWO2WKHA56ViZsGly6XK1p2y3.tdaNSdFG', 'admin', '2000-02-13', '+6287886820365', '6586286621621142', '2025-09-28 04:13:04', 2, 'RPL'),
 (5, 'ych.cpm1@gmail.com', '$2y$10$bE0OTfWSnokk9hVjBFnHQeMRSto8mYnFLip8TPXU.i/qrz83TRrOS', 'Yoeichi Zhafif Rafa Effendi', '2008-11-13', '+6285183103656', '2937296183628', '2025-09-28 05:44:55', 2, 'TKJ'),
 (7, 'asasdad@gmail.com', '$2y$10$0.BxqodyQ04Z99w1SsWlIODlO4PIMCgzvNZUpAqgvuU1aMan9eOTO', 'Muhammad iqbal ramadhan al faris', '2008-09-13', '+6285746113606', '22223', '2025-09-28 07:28:20', 2, 'TM'),
 (9, 'akuntiktokych@gmail.com', '$2y$10$rXRdalkBJBX5BeYBifGxM.Jqr4KXtydGz1GNJd.Nqii7HoMfdbbSG', 'Haikal', '2000-12-13', '+6298187421681', '18416274154714087', '2025-09-28 12:13:52', 2, 'AKUTANSI'),
 (10, 'testpayment@gmail.com', '$2y$10$.7/eK4xkKmXJDyRxpOHybOQ/Ki4MVfLb5zO6wAKA9m2jE7b3R0.BG', 'testaccountpayment', '2000-11-04', '+621331515111', '1531155436447543664', '2025-09-28 15:59:36', 2, 'TM'),
-(11, 'farisikbal304@gmail.com', '$2y$10$7pCz5mYxuEefA.5bCyEEj.Cjwt.2J9eqd6hDNEic0eJzAOfeuOYvS', 'Muhammad iqbal ramadhan al faris', '2008-09-13', '+6285746113606', '9912394300400', '2025-09-29 05:37:11', 2, 'TM'),
+(11, 'farisikbal304@gmail.com', '$2b$10$6lq9XdGYxmz3DDZuUSqhZe6YttgWwJj/Lj1ctrUX.LwyuhXH45K.u', 'Muhammad iqbal ramadhan al faris', '2008-09-13', '+6285746113606', '9912394300400', '2025-09-29 05:37:11', 2, 'TM'),
 (12, 'roosetedei@gmail.com', '$2y$10$jW4kBeDSZ4zPx9Z268PSe.F2QmYVw1GVsHxVUO8ef2c2TsZc6Gd6G', 'kocak', '2000-12-12', '+6285668987689', '987656789098765', '2025-09-29 09:06:24', 2, 'RPL'),
-(13, 'skrm@gmail.com', '$2y$10$rlE3f9w1UCcYiHcH2Ck1iOTDtqnwn3iJJI0xFKEdVZB2kKPYnVRLW', 'Tub', '2010-01-08', '+6281316023201', '351535535776', '2025-09-30 00:51:31', 2, 'RPL');
+(13, 'skrm@gmail.com', '$2y$10$rlE3f9w1UCcYiHcH2Ck1iOTDtqnwn3iJJI0xFKEdVZB2kKPYnVRLW', 'Tub', '2010-01-08', '+6281316023201', '351535535776', '2025-09-30 00:51:31', 2, 'RPL'),
+(14, 'carissacantika00@gmail.com', '$2y$10$co2vgb3FDMzwB/QUL5SPgOHohEcIl5e.00uLPTW.5/Rs5h4UjynDW', 'azzahra alviatin', '2009-01-01', '+6287654322145', '123456789012345', '2025-10-02 08:16:30', 2, 'RPL'),
+(15, 'woiwoiwoi@gmail.com', '$2b$10$bcAxYO9wMC1pBjkG8IRyyeeCtL43WEPMwzXOabYVs.0rqHbkO.mxi', 'test with full nextjs', '2008-12-11', '+621841874871248', '14214311124139', '2025-10-06 14:35:55', 2, 'PB');
 
 -- --------------------------------------------------------
 
@@ -339,7 +354,8 @@ INSERT INTO `user_jalur` (`id`, `user_id`, `jalur_id`, `status`, `tanggal_daftar
 (13, 11, 8, 'aktif', '2025-09-29 05:40:28'),
 (14, 12, 1, 'aktif', '2025-09-29 09:06:52'),
 (15, 13, 8, 'aktif', '2025-09-30 00:52:50'),
-(21, 1, 1, 'aktif', '2025-09-30 01:47:20');
+(21, 1, 1, 'aktif', '2025-09-30 01:47:20'),
+(24, 15, 8, 'aktif', '2025-10-06 15:02:33');
 
 --
 -- Indexes for dumped tables
@@ -350,9 +366,7 @@ INSERT INTO `user_jalur` (`id`, `user_id`, `jalur_id`, `status`, `tanggal_daftar
 --
 ALTER TABLE `berkas`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_id` (`user_id`,`jenis_berkas`),
-  ADD UNIQUE KEY `unik_user_jenis` (`user_id`,`jenis_berkas`),
-  ADD KEY `idx_user_berkas` (`user_id`,`jenis_berkas`);
+  ADD UNIQUE KEY `unik_user_jenis` (`user_id`,`jenis_berkas`);
 
 --
 -- Indexes for table `data_diri`
@@ -422,13 +436,13 @@ ALTER TABLE `user_jalur`
 -- AUTO_INCREMENT for table `berkas`
 --
 ALTER TABLE `berkas`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `data_diri`
 --
 ALTER TABLE `data_diri`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `jalur`
@@ -440,19 +454,19 @@ ALTER TABLE `jalur`
 -- AUTO_INCREMENT for table `kartu`
 --
 ALTER TABLE `kartu`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `sekolah`
@@ -464,13 +478,13 @@ ALTER TABLE `sekolah`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `user_jalur`
 --
 ALTER TABLE `user_jalur`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Constraints for dumped tables
