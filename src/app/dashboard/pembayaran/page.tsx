@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 
 interface Pembayaran {
+  allowRetry: boolean;
   id: number;
   invoice_id: string;
   amount: number;
@@ -34,38 +35,65 @@ export default function PembayaranPage() {
   const [pembayaranList, setPembayaranList] = useState<Pembayaran[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [indexpay, setindexpay] = useState(1)
+  
 
   useEffect(() => {
     fetchPembayaran();
-    fetch("/api/user-jalur.php")
+    fetch("/api/user_jalur")
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setJalur(data.jalur);
+          console.log("Fetched:", data);
+          setJalur(data.user_jalur);
         }
       });
+    fetchPembayaran();
+  }, []);
+  useEffect(() => {
+    fetchPembayaran().then(async () => {
+      const res = await fetch("/api/pembayaran/expirecheck");
+      const data = await res.json();
+      if (data.success) {
+        setPembayaranList(prev =>
+          prev.map(p => {
+            const found = data.data.find((d: any) => d.id === p.id);
+            return found ? { ...p, allowRetry: found.allowRetry } : p;
+          })
+        );
+      }
+    });
   }, []);
   const [jalur, setJalur] = useState<any>(null);
+  useEffect(() => {
+  }, []);
   const fetchPembayaran = async () => {
+    setLoading(true);
     try {
-      const response = await fetch('/api/pembayaran.php');
+      const response = await fetch("/api/pembayaran/create", {
+        method: "GET",
+      });
+
       const result = await response.json();
 
       if (result.success) {
         setPembayaranList(result.data);
+      } else {
+        console.error("Failed to fetch pembayaran:", result.message);
       }
     } catch (error) {
-      console.error('Error fetching pembayaran:', error);
+      console.error("Error fetching pembayaran:", error);
     } finally {
       setLoading(false);
     }
   };
 
+
   const createPayment = async (jalurId: number) => {
     setCreating(true);
 
     try {
-      const response = await fetch('/api/pembayaran.php', {
+      const response = await fetch('/api/pembayaran/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'create_payment', jalur_id: jalurId })
@@ -80,7 +108,7 @@ export default function PembayaranPage() {
             text: "Invoice pembayaran berhasil dibuat!",
             icon: "success",
             confirmButtonText: "Ok"
-          });
+          }).then(() => { window.location.reload });
         }
         fetchPembayaran();
       } else {
@@ -90,7 +118,7 @@ export default function PembayaranPage() {
             text: result.message,
             icon: "error",
             confirmButtonText: "Ok"
-          });
+          }).then(() => { window.location.reload });
         }
       }
     } catch (error) {
@@ -101,7 +129,7 @@ export default function PembayaranPage() {
           text: "Terjadi kesalahan sistem",
           icon: "error",
           confirmButtonText: "Ok"
-        });
+        }).then(() => { window.location.reload });
       }
     } finally {
       setCreating(false);
@@ -141,6 +169,13 @@ export default function PembayaranPage() {
     }
   };
 
+  const indexmethod = [
+    {
+      id: 1,
+      paymethod: ""
+    }
+  ]
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -151,7 +186,8 @@ export default function PembayaranPage() {
       </div>
     );
   }
-
+  //console.log('pembayaran response:', pembayaranList);
+  //console.log('jalur:', jalur);
   return (
     <div className="space-y-6">
       {/* Alert */}
@@ -173,26 +209,36 @@ export default function PembayaranPage() {
 
         <div className="p-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-            <div className="flex items-center gap-2 p-3 border rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/BankNegaraIndonesia46-logo.svg" className="h-4" alt="BNI" />
+            <button className={indexpay === 1 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
+              onClick={() => setindexpay(1)}
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg" className="h-4" alt="BNI" />
               <span className="text-sm">Virtual Account</span>
-            </div>
-            <div className="flex items-center gap-2 p-3 border rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors">
+            </button>
+            <button className={indexpay === 2 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
+              onClick={() => setindexpay(2)}
+            >
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/BANK_BRI_logo_%28vertical%29.svg/640px-BANK_BRI_logo_%28vertical%29.svg.png" className="h-5" alt="BRI" />
               <span className="text-sm">Virtual Account</span>
-            </div>
-            <div className="flex items-center gap-2 p-3 border rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors">
+            </button>
+            <button className={indexpay === 3 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
+              onClick={() => setindexpay(3)}
+            >
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/640px-Logo_QRIS.svg.png" className="h-4" alt="QRIS" />
               <span className="text-sm">QRIS</span>
-            </div>
-            <div className="flex items-center gap-2 p-3 border rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors">
+            </button>
+            <button className={indexpay === 4 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
+              onClick={() => setindexpay(4)}
+            >
               <i className="fa-brands fa-cc-visa text-blue-700 text-xl"></i>
               <span className="text-sm">Kartu Kredit</span>
-            </div>
-            <div className="flex items-center gap-2 p-3 border rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors">
+            </button>
+            <button className={indexpay === 5 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
+              onClick={() => setindexpay(5)}
+            >
               <i className="fa-solid fa-wallet text-green-600 text-xl"></i>
               <span className="text-sm">E-Wallet</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -234,6 +280,11 @@ export default function PembayaranPage() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {pembayaranList.map((payment) => (
                       <tr key={payment.id} className="hover:bg-gray-50">
+                        {/* Debug log inline */}
+                        {(() => {
+                          console.log("payment row:", payment);
+                          return null;
+                        })()}
                         <td className="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">{payment.invoice_id}</td>
                         <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{payment.jalur_nama}</td>
                         <td className="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">{formatCurrency(payment.amount)}</td>
@@ -257,6 +308,16 @@ export default function PembayaranPage() {
                               Selesai
                             </span>
                           )}
+                          {payment.status === "expired" && payment.allowRetry && (
+                            <div className='px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
+                              <i className="fa-solid fa-arrows-rotate mr-1"></i>
+                              <button
+                                onClick={() => jalur && createPayment(jalur.id)}
+                                disabled={!jalur}>
+                                {creating ? 'Proses...' : "Buat Lagi"}
+                              </button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -268,6 +329,11 @@ export default function PembayaranPage() {
               <div className="md:hidden space-y-4">
                 {pembayaranList.map((payment) => (
                   <div key={payment.id} className="p-4 border rounded-lg shadow-sm">
+                    {/* Debug log inline */}
+                    {(() => {
+                      console.log("payment row:", payment);
+                      return null;
+                    })()}
                     <div className="text-sm font-medium text-gray-900">Invoice: {payment.invoice_id}</div>
                     <div className="text-sm text-gray-600">Jalur: {payment.jalur_nama}</div>
                     <div className="text-sm font-medium text-gray-900">Jumlah: {formatCurrency(payment.amount)}</div>
@@ -290,6 +356,16 @@ export default function PembayaranPage() {
                           <i className="fa-solid fa-check mr-1"></i>
                           Selesai
                         </span>
+                      )}
+                      {payment.status === "expired" && payment.allowRetry && (
+                        <div className='block w-full text-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
+                          <i className="fa-solid fa-arrows-rotate mr-1"></i>
+                          <button
+                            onClick={() => jalur && createPayment(jalur.id)}
+                            disabled={!jalur}>
+                            {creating ? 'Proses...' : "Buat Lagi"}
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>

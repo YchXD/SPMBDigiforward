@@ -38,7 +38,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const checkUserStatus = async () => {
     try {
-      const response = await fetch('/api/user-status.php');
+      const response = await fetch('/api/user');
       const result = await response.json();
 
       if (result.success) {
@@ -62,7 +62,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/logout.php', { method: 'POST' });
+      await fetch('/api/auth/logout', { method: 'POST' });
       router.push('/welcome');
     } catch (error) {
       console.error('Logout error:', error);

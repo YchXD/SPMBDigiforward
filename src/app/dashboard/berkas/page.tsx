@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
 
 interface Berkas {
   id: number;
@@ -28,6 +29,7 @@ export default function BerkasPage() {
     { key: 'foto', label: 'Pas Foto 3x4', accept: '.jpg,.jpeg,.png' },
     { key: 'rapor', label: 'Rapor Semester Terakhir', accept: '.pdf,.jpg,.jpeg,.png' }
   ];
+  const router = useRouter();
 
   useEffect(() => {
     fetchBerkas();
@@ -35,7 +37,7 @@ export default function BerkasPage() {
 
   const fetchBerkas = async () => {
     try {
-      const response = await fetch('/api/berkas.php');
+      const response = await fetch('/api/berkas');
       const result = await response.json();
 
       if (result.success) {
@@ -48,7 +50,7 @@ export default function BerkasPage() {
     }
   };
 
-  const handleFileUpload = async (jenisBerkas: string, file: File) => {
+  const handleFileUpload = async (jenisBerkas: string, file: File, isLast: boolean) => {
     if (!file) return;
 
     // Validate file size (2MB)
@@ -71,12 +73,17 @@ export default function BerkasPage() {
     formData.append('jenis_berkas', jenisBerkas);
 
     try {
-      const response = await fetch('/api/berkas.php', {
+      const response = await fetch('/api/berkas', {
         method: 'POST',
         body: formData
       });
 
       const result = await response.json();
+      if (result.success) {
+        if (isLast) {
+          router.push("/dashboard/kartu");
+        }
+      }
 
       if (result.success) {
         if (window.Swal) {
@@ -87,7 +94,7 @@ export default function BerkasPage() {
             confirmButtonText: "Ok"
           });
         }
-        fetchBerkas(); // Refresh list
+        fetchBerkas(); 
       } else {
         if (window.Swal) {
           window.Swal.fire({
@@ -164,9 +171,10 @@ export default function BerkasPage() {
           </div>
 
           <div className="space-y-6">
-            {berkasTypes.map((type) => {
+            {berkasTypes.map((type, index) => {
               const berkas = getBerkasStatus(type.key);
               const isUploading = uploading === type.key;
+              const isLast = index === berkasTypes.length - 1;
 
               return (
                 <div key={type.key} className="border border-gray-200 rounded-lg p-4 w-full overflow-hidden">
@@ -189,7 +197,8 @@ export default function BerkasPage() {
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            handleFileUpload(type.key, file);
+                            handleFileUpload(type.key, file, isLast);
+                            console.log(isLast)
                           }
                         }}
                         className="hidden"

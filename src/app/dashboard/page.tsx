@@ -22,8 +22,9 @@ export default function Dashboard() {
 
   const fetchUserStatus = async () => {
     try {
-      const response = await fetch('/api/user-status.php');
+      const response = await fetch('/api/user', { credentials: "include" });
       const result = await response.json();
+      console.log(result)
       
       if (result.success) {
         setUserStatus(result.data);

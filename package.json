@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "concurrently \"next dev\" \"node whatsapp-service/server.js\" \"lt -p 80\"",
+    "dev": "concurrently \"next dev\"",
     "build": "next build",
-    "start": "concurrently \"next start\" \"node whatsapp-service/server.js\" \"lt -p 80\"",
+    "start": "concurrently \"next start\" \"node whatsapp-service/index.js\"",
     "lint": "next lint",
     "php-server": "php -S localhost:8080 -t api/"
   },
@@ -10,16 +10,24 @@
     "@fortawesome/fontawesome-svg-core": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
+    "bcrypt": "^6.0.0",
     "html2canvas": "^1.4.1",
     "html2canvas-pro": "^1.5.11",
+    "iron-session": "^8.0.4",
+    "jsonwebtoken": "^9.0.2",
     "mime": "^4.1.0",
+    "mysql2": "^3.15.1",
     "next": "^15.5.4",
+    "nodemailer": "^7.0.9",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sweetalert2": "^11.23.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "24.5.2",
+    "@types/nodemailer": "^7.0.2",
     "@types/react": "^19.1.13",
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",

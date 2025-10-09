@@ -46,7 +46,7 @@ export default function SignIn() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/signin.php', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ export default function SignIn() {
   
     const checkAuth = async () => {
       try {
-        const response = await fetch('/api/check-auth.php');
+        const response = await fetch('/api/auth/session');
         const result = await response.json();
   
         if (result.success) {

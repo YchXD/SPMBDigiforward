@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
 
 interface DataDiri {
   nisn: string;
@@ -40,6 +41,7 @@ export default function DataDiriPage() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchDataDiri();
@@ -47,7 +49,7 @@ export default function DataDiriPage() {
 
   const fetchDataDiri = async () => {
     try {
-      const response = await fetch('/api/data-diri.php');
+      const response = await fetch('/api/datadiri');
       const result = await response.json();
 
       if (result.success && result.data) {
@@ -74,7 +76,7 @@ export default function DataDiriPage() {
 
 
     try {
-      const response = await fetch('/api/data-diri.php', {
+      const response = await fetch('/api/datadiri', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -84,13 +86,13 @@ export default function DataDiriPage() {
 
       if (result.success) {
         if (window.Swal) {
-          window.Swal.fire({
+          await window.Swal.fire({
             title: "Berhasil",
             text: "Data diri berhasil disimpan!",
             icon: "success",
             confirmButtonText: "Ok"
           }).then(() => {
-            window.location.reload();
+            router.push("/dashboard/berkas");
           });
         }
       } else {
@@ -215,7 +217,7 @@ export default function DataDiriPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap</label>
               <textarea
                 name="alamat"
-                value={formData.alamat}
+                value={formData.alamat ?? ""}
                 onChange={handleInputChange}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
@@ -228,7 +230,7 @@ export default function DataDiriPage() {
               <input
                 type="text"
                 name="no_hp"
-                value={formData.no_hp}
+                value={formData.no_hp ?? ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 required
@@ -240,7 +242,7 @@ export default function DataDiriPage() {
               <input
                 type="text"
                 name="asal_sekolah"
-                value={formData.asal_sekolah}
+                value={formData.asal_sekolah ?? ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 required

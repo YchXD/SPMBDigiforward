@@ -13,7 +13,7 @@ declare global {
 
 export default function jurusan() {
   const handlejurusanSelection = (jurusan: string) => {
-    if (jurusan == typeof String){
+    if (jurusan == typeof String) {
 
     }
     if (typeof window !== 'undefined' && window.Swal) {
@@ -70,7 +70,7 @@ export default function jurusan() {
               />
             </div>
             <div className="flex flex-1 flex-col items-center text-center p-4">
-              <h3 className="font-bold text-2xl text-gray-900">Akutansi</h3>
+              <h3 className="font-bold text-2xl text-gray-900">Akuntansi</h3>
               <p className="text-sm text-gray-600 mt-2 mb-3">
                 Pelajari pencatatan dan analisis keuangan untuk mengelola bisnis dengan tepat 💰📊
               </p>
@@ -99,6 +99,29 @@ export default function jurusan() {
               </p>
               <button
                 onClick={() => handlejurusanSelection('DKV')}
+                className="cursor-pointer mt-auto w-full px-6 py-2 rounded-lg bg-[#4f5686] text-white hover:bg-[#41466e] transition"
+              >
+                Pilih
+              </button>
+            </div>
+          </div>
+          {/* Card Perbankan */}
+          <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
+                          w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
+            <div className="w-full h-48 md:h-52 lg:h-56">
+              <img
+                src="images/akutansi.png"
+                alt="akutansi"
+                className="w-full h-full object-cover aspect-square rounded-t-2xl"
+              />
+            </div>
+            <div className="flex flex-1 flex-col items-center text-center p-4">
+              <h3 className="font-bold text-2xl text-gray-900">PB</h3>
+              <p className="text-sm text-gray-600 mt-2 mb-3">
+                Pelajari pencatatan dan analisis keuangan untuk mengelola bisnis dengan tepat 💰📊
+              </p>
+              <button
+                onClick={() => handlejurusanSelection('PB')}
                 className="cursor-pointer mt-auto w-full px-6 py-2 rounded-lg bg-[#4f5686] text-white hover:bg-[#41466e] transition"
               >
                 Pilih

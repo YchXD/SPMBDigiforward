@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 
 interface Jalur {
@@ -32,7 +32,7 @@ export default function JalurPage() {
 
   const fetchJalur = async () => {
     try {
-      const response = await fetch('/api/jalur.php');
+      const response = await fetch('/api/jalur');
       const result = await response.json();
 
       if (result.success) {
@@ -70,7 +70,7 @@ export default function JalurPage() {
 
       if (result.isConfirmed) {
         try {
-          const response = await fetch('/api/jalur.php', {
+          const response = await fetch('/api/jalur', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ jalur_id: jalur.id })
@@ -79,13 +79,13 @@ export default function JalurPage() {
           const result = await response.json();
 
           if (result.success) {
-            window.Swal.fire({
+            await window.Swal.fire({
               title: "Berhasil",
               text: "Jalur berhasil dipilih!",
               icon: "success",
               confirmButtonText: "Ok"
             }).then(() => {
-              router.push("https://google.com");
+              router.push("/dashboard/pembayaran");
             });
           } else {
             window.Swal.fire({

@@ -18,7 +18,7 @@ export default function Welcome() {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('/api/check-auth.php');
+      const response = await fetch('/api/auth/session');
       const result = await response.json();
 
       if (result.success) {

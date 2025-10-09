@@ -35,85 +35,122 @@ export default function ForgotPassword() {
   const isPasswordValid = lengthValid && caseValid && numberValid && matchValid;
 
   const [method, setMethod] = useState<'email' | 'whatsapp'>('email');
+  const [user, setUser] = useState();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      let endpoint = '';
+      let endpoint = "";
       let payload: any = {};
 
       switch (step) {
-        case 1:
-          endpoint = '/api/forgot-password-send.php';
+        case 1: {
+          endpoint = "/api/forgot-password/send";
           payload = {
             method,
-            email: method === 'email' ? formData.email : null,
-            phone: method === 'whatsapp' ? formData.phone : null,
+            email: method === "email" ? formData.email : null,
+            phone: method === "whatsapp" ? formData.phone : null,
           };
+
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          console.log("Step 1 result:", data);
+
+          if (data.success) {
+            setUser(data.id);
+            setStep(2);
+            window.Swal?.fire({
+              title: "Berhasil",
+              text: data.message,
+              icon: "success",
+              confirmButtonText: "Ok",
+            });
+          } else {
+            window.Swal?.fire({
+              title: "Error",
+              text: data.message,
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
+          }
           break;
-        case 2:
-          endpoint = '/api/forgot-password-verify.php';
-          payload = { otp: formData.otp };
+        }
+
+        case 2: {
+          endpoint = "/api/forgot-password/verify";
+          payload = { otp: formData.otp, user_id: user };
+
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          console.log("Step 2 result:", data);
+
+          if (data.success) {
+            setStep(3);
+            window.Swal?.fire({
+              title: "Berhasil",
+              text: data.message,
+              icon: "success",
+              confirmButtonText: "Ok",
+            });
+          } else {
+            window.Swal?.fire({
+              title: "Error",
+              text: data.message,
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
+          }
           break;
-        case 3:
+        }
+
+        case 3: {
           if (!isPasswordValid) {
-            if (window.Swal) {
-              window.Swal.fire({
-                title: "Error",
-                text: "Password tidak valid atau konfirmasi tidak cocok!",
-                icon: "error",
-                confirmButtonText: "Ok"
-              });
-            }
+            window.Swal?.fire({
+              title: "Error",
+              text: "Password tidak valid atau konfirmasi tidak cocok!",
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
             setIsLoading(false);
             return;
           }
-          endpoint = '/api/forgot-password-reset.php';
+
+          endpoint = "/api/forgot-password/reset";
           payload = { newPassword: formData.newPassword };
-          break;
-      }
-      console.log("Sending payload:", payload);
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
 
-      const result = await response.json();
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
 
-      if (result.success) {
-        if (step < 3) {
-          setStep(step + 1);
-          if (window.Swal) {
-            window.Swal.fire({
-              title: "Berhasil",
-              text: result.message,
-              icon: "success",
-              confirmButtonText: "Ok"
-            });
-          }
-        } else {
-          if (window.Swal) {
-            window.Swal.fire({
+          if (data.success) {
+            window.Swal?.fire({
               title: "Berhasil",
               text: "Password berhasil direset, silakan login.",
               icon: "success",
-              confirmButtonText: "Ok"
-            }).then(() => router.push('/signin'));
+              confirmButtonText: "Ok",
+            }).then(() => router.push("/signin"));
           } else {
-            router.push('/signin');
+            window.Swal?.fire({
+              title: "Error",
+              text: data.message,
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
           }
-        }
-      } else {
-        if (window.Swal) {
-          window.Swal.fire({
-            title: "Error",
-            text: result.message,
-            icon: "error",
-            confirmButtonText: "Ok"
-          });
+          break;
         }
       }
     } catch (error) {

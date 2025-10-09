@@ -50,13 +50,18 @@ function SignUpContent() {
       router.push('/jurusan');
       return;
     }
+    if (!jurusan) {
+      router.push('/jurusan');
+      return;
+    }
+    
 
     fetchSekolahData(lemdik);
   }, [lemdik, router]);
 
   const fetchSekolahData = async (lemdikCode: number) => {
     try {
-      const response = await fetch(`/api/sekolah-detail.php?lemdik=${lemdikCode}`);
+      const response = await fetch(`/api/sekolah?lemdik=${lemdikCode}`);
       const data = await response.json();
 
       if (data.success) {
@@ -88,7 +93,7 @@ function SignUpContent() {
 
   const checkEmail = async (email: string) => {
     try {
-      const res = await fetch(`/api/check-email.php?email=${encodeURIComponent(email)}`);
+      const res = await fetch(`/api/emailcheck?email=${encodeURIComponent(email)}`);
       const result = await res.json();
       if (!result.available) {
         setError("Email sudah terdaftar");
@@ -153,7 +158,7 @@ function SignUpContent() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/signup.php', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

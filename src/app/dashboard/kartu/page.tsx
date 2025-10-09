@@ -35,7 +35,7 @@ export default function KartuPage() {
 
   const fetchKartu = async () => {
     try {
-      const response = await fetch('/api/kartu.php');
+      const response = await fetch('/api/kartu');
       const result = await response.json();
 
       if (result.success && result.data) {
@@ -52,7 +52,7 @@ export default function KartuPage() {
     setGenerating(true);
 
     try {
-      const response = await fetch('/api/kartu.php', {
+      const response = await fetch('/api/kartu', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'generate' })
