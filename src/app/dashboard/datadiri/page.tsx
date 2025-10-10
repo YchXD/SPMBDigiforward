@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 
 interface DataDiri {
+  tanggal_lahir: string;
+  no_hp_ortu: string;
+  tahun_lulus: string;
+  nik: string ;
+  nama_lengkap: string;
   nisn: string;
   tempat_lahir: string;
   jenis_kelamin: string;
@@ -26,9 +31,11 @@ declare global {
 
 export default function DataDiriPage() {
   const [formData, setFormData] = useState<DataDiri>({
+    nama_lengkap: '',
     nisn: '',
     tempat_lahir: '',
     jenis_kelamin: '',
+    nik: '',
     agama: '',
     alamat: '',
     no_hp: '',
@@ -37,7 +44,10 @@ export default function DataDiriPage() {
     nama_ibu: '',
     pekerjaan_ayah: '',
     pekerjaan_ibu: '',
-    penghasilan_ortu: ''
+    penghasilan_ortu: '',
+    tahun_lulus: '',
+    tanggal_lahir: '',
+    no_hp_ortu: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -55,7 +65,9 @@ export default function DataDiriPage() {
       if (result.success && result.data) {
         setFormData({
           ...result.data,
-          no_hp: result.data.wa ?? result.data.no_hp
+          no_hp: result.data.wa ?? result.data.no_hp,
+          nama_lengkap: result.data.nama_lengkap,
+          tanggal_lahir: result.data.tanggal_lahir
         });
       }
     } catch (error) {
@@ -70,11 +82,9 @@ export default function DataDiriPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  let handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-
-
     try {
       const response = await fetch('/api/datadiri', {
         method: 'POST',
@@ -118,6 +128,7 @@ export default function DataDiriPage() {
     } finally {
       setSaving(false);
     }
+    console.log(formData.tanggal_lahir)
   };
 
   if (loading) {
@@ -156,11 +167,11 @@ export default function DataDiriPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">NIK</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap Calon Peserta Didik</label>
               <input
                 type="text"
-                name="nisn"
-                value={formData.nisn}
+                name="nama_lengkap"
+                value={formData.nama_lengkap ?? ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 required
@@ -168,11 +179,48 @@ export default function DataDiriPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">NISN</label>
               <input
                 type="text"
-                name="tempat_lahir"
-                value={formData.tempat_lahir ?? ""}
+                name="nisn"
+                value={formData.nisn ?? ''}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                required
+              />
+            </div>
+
+            <div className='flex flex-row w-full gap-1 h-full'>
+              <div className='flex flex-col w-full'>
+                <label className="w-full h-full text-sm font-medium text-gray-700 mb-2">Tempat Lahir</label>
+                <input
+                  type="text"
+                  name="tempat_lahir"
+                  value={formData.tempat_lahir ?? ""}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
+              <div className='flex flex-col'>
+                <label className="w-full h-full text-sm font-medium text-gray-700 mb-2">Tanggal Lahir</label>
+                <input
+                  type="date"
+                  name="tanggal_lahir"
+                  value={formData.tanggal_lahir ? formData.tanggal_lahir.split('T')[0] : ''}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">NIK</label>
+              <input
+                type="text"
+                name="nik"
+                value={formData.nik ?? ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 required
@@ -225,28 +273,33 @@ export default function DataDiriPage() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Nomor HP/WhatsApp</label>
-              <input
-                type="text"
-                name="no_hp"
-                value={formData.no_hp ?? ""}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Asal Sekolah</label>
-              <input
-                type="text"
-                name="asal_sekolah"
-                value={formData.asal_sekolah ?? ""}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                required
-              />
+            <div className='flex flex-row w-full col-span-1 md:col-span-2 gap-1'>
+              <div className='flex flex-col w-full'>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Asal Sekolah</label>
+                <input
+                  type="text"
+                  name="asal_sekolah"
+                  value={formData.asal_sekolah ?? ""}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
+              <div className='flex flex-col h-full'>
+                <label className="w-full text-sm font-medium text-gray-700 mb-2">Tahun Lulus</label>
+                <input
+                  type="number"
+                  min="1980" 
+                  max="9999" 
+                  step="1"
+                  maxLength={4}
+                  name="tahun_lulus"
+                  value={formData.tahun_lulus ?? ""}
+                  onChange={handleInputChange}
+                  className="w-fit px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  required
+                />
+              </div>
             </div>
 
             {/* Data Orang Tua */}
@@ -295,6 +348,30 @@ export default function DataDiriPage() {
                 value={formData.pekerjaan_ibu}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nomor HP/WhatsApp Perseta Didik</label>
+              <input
+                type="text"
+                name="no_hp"
+                value={formData.no_hp ?? ""}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nomor HP/WhatsApp Orang Tua/Wali</label>
+              <input
+                type="text"
+                name="no_hp_ortu"
+                value={formData.no_hp_ortu ?? ""}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                required
               />
             </div>
 

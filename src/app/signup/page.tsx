@@ -46,7 +46,7 @@ function SignUpContent() {
   const [waNumber, setWaNumber] = useState('');
 
   useEffect(() => {
-    if (!lemdik) {
+    if (lemdik!=2) {
       router.push('/jurusan');
       return;
     }

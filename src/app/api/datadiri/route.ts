@@ -34,9 +34,8 @@ export async function GET() {
 
       let data = rows[0];
       if (!data) {
-        // fallback to users table
         const [userRows]: any = await conn.execute(
-          "SELECT nik AS nisn, nama, wa FROM users WHERE id = ?",
+          "SELECT nisn, nama, wa, tanggal_lahir FROM users WHERE id = ?",
           [userId]
         );
         data = userRows[0] || {};
@@ -79,20 +78,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const dateOnly = input.tanggal_lahir.split('T')[0];
+
     const conn = await pool.getConnection();
     try {
       const [exists]: any = await conn.execute(
         "SELECT id FROM data_diri WHERE user_id = ?",
         [userId]
       );
+      console.log(input, dateOnly)
 
       if (exists.length > 0) {
-        // Update existing record
         await conn.execute(
           `UPDATE data_diri SET 
             nisn = ?, tempat_lahir = ?, jenis_kelamin = ?, agama = ?, alamat = ?, 
-            no_hp = ?, asal_sekolah = ?, nama_ayah = ?, nama_ibu = ?, 
-            pekerjaan_ayah = ?, pekerjaan_ibu = ?, penghasilan_ortu = ?, updated_at = NOW()
+            no_hp = ?, no_hp_ortu = ?, asal_sekolah = ?, nama_ayah = ?, nama_ibu = ?, 
+            pekerjaan_ayah = ?, pekerjaan_ibu = ?, penghasilan_ortu = ?, tanggal_lahir = ?, tahun_lulus = ?, nik = ?, nama_lengkap = ?, updated_at = NOW()
            WHERE user_id = ?`,
           [
             input.nisn,
@@ -101,12 +102,17 @@ export async function POST(req: NextRequest) {
             input.agama,
             input.alamat,
             input.no_hp,
+            input.no_hp_ortu || "",
             input.asal_sekolah,
             input.nama_ayah || "",
             input.nama_ibu || "",
             input.pekerjaan_ayah || "",
             input.pekerjaan_ibu || "",
             input.penghasilan_ortu || "",
+            dateOnly || "",
+            input.tahun_lulus || "",
+            input.nik || "",
+            input.nama_lengkap || "",
             userId,
           ]
         );
@@ -115,8 +121,8 @@ export async function POST(req: NextRequest) {
         await conn.execute(
           `INSERT INTO data_diri 
             (user_id, nisn, tempat_lahir, jenis_kelamin, agama, alamat, no_hp, asal_sekolah, 
-            nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, penghasilan_ortu)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, penghasilan_ortu, no_hp_ortu, nik, tahun_lulus, tanggal_lahir, nama_lengkap)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             userId,
             input.nisn,
@@ -131,9 +137,24 @@ export async function POST(req: NextRequest) {
             input.pekerjaan_ayah || "",
             input.pekerjaan_ibu || "",
             input.penghasilan_ortu || "",
+            input.no_hp_ortu || "",
+            input.nik || "",
+            input.tahun_lulus || "",
+            dateOnly,
+            input.nama_lengkap || ""
           ]
         );
       }
+
+      await conn.execute(
+        `UPDATE users SET nisn = ?, nama = ?, wa = ? WHERE id = ?`,
+        [
+          input.nisn ?? null,
+          input.nama_lengkap ?? null,
+          input.no_hp ?? null,
+          userId ?? null
+        ]
+      );
 
       return NextResponse.json({ success: true, message: "Data diri berhasil disimpan" });
     } finally {

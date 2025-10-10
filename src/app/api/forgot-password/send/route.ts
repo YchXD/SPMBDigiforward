@@ -81,7 +81,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: true, message: "OTP sudah dikirim ke email!", id: userId });
         } else if (method === "whatsapp") {
             const res = await fetch(
-                `http://localhost:4000/send-otp?phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(String(otp))}`,
+                `${process.env.WHATSAPP}/send-otp?phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(String(otp))}`,
             );
 
             if (!res.ok) {

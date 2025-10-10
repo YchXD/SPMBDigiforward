@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import pool from "@/lib/db";
 import fs from "fs";
 import path from "path";
+import { put } from "@vercel/blob";
+import { randomUUID } from "crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
@@ -78,50 +80,90 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: "Format file tidak didukung" });
         }
 
-        // ✅ Prepare directories
-        const uploadDir = path.join(process.cwd(), "uploads", "berkas", String(userId));
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
+        if (process.env.VERCEL) {
+            const filename = `${jenis_berkas}_${Date.now()}_${randomUUID()}.${ext}`;
+            const blobPath = `uploads/berkas/${userId}/${filename}`;
 
-        const filename = `${jenis_berkas}_${Date.now()}.${ext}`;
-        const filepath = path.join(uploadDir, filename);
+            const buffer = Buffer.from(await file.arrayBuffer());
 
-        // ✅ Save file to disk
-        const buffer = Buffer.from(await file.arrayBuffer());
-        fs.writeFileSync(filepath, buffer);
+            const { url } = await put(blobPath, buffer, {
+                access: "public", 
+                contentType: file.type || "application/octet-stream",
+            });
 
-        const relativePath = path.join("../uploads/berkas", String(userId), filename).replace(/\\/g, "/");;
+            const conn = await pool.getConnection();
+            try {
+                const [oldRows]: any = await conn.execute(
+                    "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
+                    [userId, jenis_berkas]
+                );
+                const oldFile = oldRows[0];
+                if (oldFile && fs.existsSync(path.join(process.cwd(), "public", oldFile.path_file))) {
+                    fs.unlinkSync(path.join(process.cwd(), "public", oldFile.path_file));
+                }
 
-        const conn = await pool.getConnection();
-        try {
-            // Delete old file if exists
-            const [oldRows]: any = await conn.execute(
-                "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
-                [userId, jenis_berkas]
-            );
-            const oldFile = oldRows[0];
-            if (oldFile && fs.existsSync(path.join(process.cwd(), "public", oldFile.path_file))) {
-                fs.unlinkSync(path.join(process.cwd(), "public", oldFile.path_file));
-            }
-
-            // Insert or update
-            await conn.execute(
-                `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
+                // Insert or update
+                await conn.execute(
+                    `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
                 VALUES (?, ?, ?, ?, ?) 
                 ON DUPLICATE KEY UPDATE 
                 nama_file = VALUES(nama_file), 
                 path_file = VALUES(path_file), 
                 ukuran_file = VALUES(ukuran_file),
                 uploaded_at = NOW()`,
-                [userId, jenis_berkas, originalName, relativePath, file.size]
-            );
-            //console.log("🗃️ Insert success");
-        } finally {
-            conn.release();
-        }
+                    [userId, jenis_berkas, originalName, url, file.size]
+                );
+                //console.log("🗃️ Insert success");
+            } finally {
+                conn.release();
+            }
 
-        return NextResponse.json({ success: true, message: "Berkas berhasil diupload" });
+            return NextResponse.json({ success: true, message: "Berkas berhasil diupload" });
+
+        } else {
+            const uploadDir = path.join(process.cwd(), "uploads", "berkas", String(userId));
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+
+            const filename = `${jenis_berkas}_${Date.now()}.${ext}`;
+            const filepath = path.join(uploadDir, filename);
+
+
+            const buffer = Buffer.from(await file.arrayBuffer());
+            fs.writeFileSync(filepath, buffer);
+
+            const relativePath = path.join("../uploads/berkas", String(userId), filename).replace(/\\/g, "/");
+
+            const conn = await pool.getConnection();
+            try {
+                const [oldRows]: any = await conn.execute(
+                    "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
+                    [userId, jenis_berkas]
+                );
+                const oldFile = oldRows[0];
+                if (oldFile && fs.existsSync(path.join(process.cwd(), "public", oldFile.path_file))) {
+                    fs.unlinkSync(path.join(process.cwd(), "public", oldFile.path_file));
+                }
+
+                // Insert or update
+                await conn.execute(
+                    `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
+                VALUES (?, ?, ?, ?, ?) 
+                ON DUPLICATE KEY UPDATE 
+                nama_file = VALUES(nama_file), 
+                path_file = VALUES(path_file), 
+                ukuran_file = VALUES(ukuran_file),
+                uploaded_at = NOW()`,
+                    [userId, jenis_berkas, originalName, relativePath, file.size]
+                );
+                //console.log("🗃️ Insert success");
+            } finally {
+                conn.release();
+            }
+
+            return NextResponse.json({ success: true, message: "Berkas berhasil diupload" });
+        }
     } catch (err: any) {
         console.error("POST berkas error:", err);
         return NextResponse.json(
