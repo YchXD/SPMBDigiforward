@@ -312,7 +312,7 @@ export default function DataDiriPage() {
               <input
                 type="text"
                 name="nama_ayah"
-                value={formData.nama_ayah}
+                value={formData.nama_ayah ?? ''}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
@@ -323,7 +323,7 @@ export default function DataDiriPage() {
               <input
                 type="text"
                 name="nama_ibu"
-                value={formData.nama_ibu}
+                value={formData.nama_ibu ?? ''}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
@@ -334,7 +334,7 @@ export default function DataDiriPage() {
               <input
                 type="text"
                 name="pekerjaan_ayah"
-                value={formData.pekerjaan_ayah}
+                value={formData.pekerjaan_ayah ?? ''}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
@@ -345,7 +345,7 @@ export default function DataDiriPage() {
               <input
                 type="text"
                 name="pekerjaan_ibu"
-                value={formData.pekerjaan_ibu}
+                value={formData.pekerjaan_ibu ?? ''}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />

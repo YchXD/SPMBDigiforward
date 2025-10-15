@@ -26,16 +26,15 @@ export async function GET() {
 
     const conn = await pool.getConnection();
     try {
-      // Try to get data_diri first
-      const [rows]: any = await conn.execute(
+      const [rows]: any = await pool.execute(
         "SELECT * FROM data_diri WHERE user_id = ?",
         [userId]
       );
 
       let data = rows[0];
       if (!data) {
-        const [userRows]: any = await conn.execute(
-          "SELECT nisn, nama, wa, tanggal_lahir FROM users WHERE id = ?",
+        const [userRows]: any = await pool.execute(
+          "SELECT nisn, nama AS nama_lengkap, wa, tanggal_lahir FROM users WHERE id = ?",
           [userId]
         );
         data = userRows[0] || {};
@@ -82,14 +81,14 @@ export async function POST(req: NextRequest) {
 
     const conn = await pool.getConnection();
     try {
-      const [exists]: any = await conn.execute(
+      const [exists]: any = await pool.execute(
         "SELECT id FROM data_diri WHERE user_id = ?",
         [userId]
       );
       console.log(input, dateOnly)
 
       if (exists.length > 0) {
-        await conn.execute(
+        await pool.execute(
           `UPDATE data_diri SET 
             nisn = ?, tempat_lahir = ?, jenis_kelamin = ?, agama = ?, alamat = ?, 
             no_hp = ?, no_hp_ortu = ?, asal_sekolah = ?, nama_ayah = ?, nama_ibu = ?, 
@@ -118,7 +117,7 @@ export async function POST(req: NextRequest) {
         );
       } else {
         // Insert new record
-        await conn.execute(
+        await pool.execute(
           `INSERT INTO data_diri 
             (user_id, nisn, tempat_lahir, jenis_kelamin, agama, alamat, no_hp, asal_sekolah, 
             nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, penghasilan_ortu, no_hp_ortu, nik, tahun_lulus, tanggal_lahir, nama_lengkap)
@@ -146,7 +145,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      await conn.execute(
+      await pool.execute(
         `UPDATE users SET nisn = ?, nama = ?, wa = ? WHERE id = ?`,
         [
           input.nisn ?? null,

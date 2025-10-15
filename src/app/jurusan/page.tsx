@@ -58,7 +58,7 @@ export default function jurusan() {
         </div>
 
         {/* Container Card */}
-        <div className="w-full flex flex-wrap gap-4 justify-center mt-10">
+        <div className="w-full flex flex-wrap xl:flex-nowrap gap-4 justify-center mt-10">
           {/* Card Akutansi */}
           <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
                           w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">

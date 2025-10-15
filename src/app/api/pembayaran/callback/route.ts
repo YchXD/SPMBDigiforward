@@ -42,12 +42,12 @@ export async function POST(req: NextRequest) {
     // === Update database ===
     const conn = await pool.getConnection();
     try {
-      const [result] = await conn.execute(
+      const [result] = await pool.execute(
         "UPDATE pembayaran SET status = 'paid', paid_at = NOW() WHERE invoice_id = ?",
         [merchantOrderId]
       );
       logs.push(`${logPrefix} - DB UPDATED: ${JSON.stringify(data)}`);
-      console.log("🚀 Duitku callback received:", data);
+      console.log("Duitku callback received:", data);
     } finally {
       conn.release();
     }
@@ -76,6 +76,6 @@ async function writeLog(lines: string[]) {
     await fs.promises.mkdir(path.dirname(logFile), { recursive: true });
     await fs.promises.appendFile(logFile, lines.join("\n") + "\n", "utf8");
   } catch (err) {
-    console.error("❌ Failed to write callback log:", err);
+    console.error("Failed to write callback log:", err);
   }
 }

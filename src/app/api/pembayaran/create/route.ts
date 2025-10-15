@@ -75,7 +75,8 @@ export async function POST(req: Request) {
     console.log("action received:", action);
 
     if (action === "create_payment") {
-      const jalur_id = body.jalur_id;
+      const { jalur_id, paymethod } = body;
+      const paymentMethod = paymethod; 
       if (!jalur_id) {
         return NextResponse.json({ success: false, message: "Jalur ID harus diisi" });
       }
@@ -90,9 +91,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: false, message: "Jalur tidak ditemukan atau tidak aktif" });
       }
 
-      // Check if payment already exists
       const [exists]: any = await pool.execute(
-        "SELECT id FROM pembayaran WHERE user_id = ? AND jalur_id = ? AND status != 'failed'",
+        "SELECT id FROM pembayaran WHERE user_id = ? AND jalur_id = ? AND status NOT IN ('failed', 'expired')",
         [safeParam(userId), safeParam(jalur_id)]
       );
       // if (exists.length > 0) {
@@ -108,8 +108,8 @@ export async function POST(req: Request) {
         .replace("T", " ");
 
       await pool.execute(
-        "INSERT INTO pembayaran (user_id, jalur_id, invoice_id, amount, expired_at) VALUES (?, ?, ?, ?, ?)",
-        [safeParam(userId), safeParam(jalur_id), invoice_id, amount, expired_at]
+        "INSERT INTO pembayaran (user_id, jalur_id, invoice_id, amount, payment_method, expired_at) VALUES (?, ?, ?, ?, ?, ?)",
+        [safeParam(userId), safeParam(jalur_id), invoice_id, amount, safeParam(paymentMethod), expired_at]
       );
 
       const paymentAmount = Math.round(amount);
@@ -129,7 +129,8 @@ export async function POST(req: Request) {
         callbackUrl,
         returnUrl,
         signature,
-        paymentMethod: "VC",
+        // paymentMethod: "VC",
+        paymentMethod,
       };
 
       const res = await fetch("https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry", {

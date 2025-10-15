@@ -37,7 +37,7 @@ function SignUpContent() {
     nama: '',
     tanggal_lahir: '',
     wa: '',
-    nik: '',
+    nisn: '',
     lemdik: lemdik || '',
     jurusan: jurusan || ''
   });
@@ -143,7 +143,7 @@ function SignUpContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password || !formData.nama || !formData.tanggal_lahir || !formData.wa || !formData.nik) {
+    if (!formData.email || !formData.password || !formData.nama || !formData.tanggal_lahir || !formData.wa || !formData.nisn) {
       if (typeof window !== 'undefined' && window.Swal) {
         window.Swal.fire({
           title: "Error",
@@ -402,18 +402,18 @@ function SignUpContent() {
                       </div>
                     </div>
 
-                    {/* NIK */}
+                    {/* nisn */}
                     <div>
-                      <p className="text-neutral-400 text-sm">NIK Calon Siswa</p>
+                      <p className="text-neutral-400 text-sm">nisn Calon Siswa</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <i className="fa-solid fa-id-card p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
                         <input
                           type="text"
-                          name="nik"
-                          value={formData.nik}
+                          name="nisn"
+                          value={formData.nisn}
                           onChange={(e) => {
                             const value = e.target.value.replace(/[^0-9]/g, '');
-                            setFormData(prev => ({ ...prev, nik: value }));
+                            setFormData(prev => ({ ...prev, nisn: value }));
                           }}
                           className="flex-1 px-3 py-2 outline-none text-sm"
                           required

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const conn = await pool.getConnection();
     console.log("✅ Connected to DB");
-    const [rows]: any = await conn.execute(
+    const [rows]: any = await pool.execute(
       "SELECT id, email, password, nama FROM users WHERE email = ?",
       [email]
     );

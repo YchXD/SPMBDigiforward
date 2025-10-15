@@ -21,22 +21,46 @@ declare global {
     Swal: any;
   }
 }
-interface Jalur {
-  id: number;
-  nama: string;
-  deskripsi: string;
-  periode_mulai: string;
-  periode_selesai: string;
-  biaya: number;
-  status: string;
-}
+// interface Jalur {
+//   id: number;
+//   nama: string;
+//   deskripsi: string;
+//   periode_mulai: string;
+//   periode_selesai: string;
+//   biaya: number;
+//   status: string;
+// }
 
 export default function PembayaranPage() {
   const [pembayaranList, setPembayaranList] = useState<Pembayaran[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [indexpay, setindexpay] = useState(1)
-  
+  const [indexpay, setindexpay] = useState<number | null>(1);
+  const [paymentLocked, setPaymentLocked] = useState(false);
+
+  const indexmethod = [
+    {
+      id: 1,
+      code: "I1"
+    },
+    {
+      id: 2,
+      code: "BC"
+    },
+    {
+      id: 3,
+      code: "GQ"
+    },
+    {
+      id: 4,
+      code: "VC"
+    },
+    {
+      id: 5,
+      code: "DA"
+    },
+  ]
+
 
   useEffect(() => {
     fetchPembayaran();
@@ -66,6 +90,41 @@ export default function PembayaranPage() {
   }, []);
   const [jalur, setJalur] = useState<any>(null);
   useEffect(() => {
+    const fetchPaymentStatus = async () => {
+      const res = await fetch("/api/pembayaran/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "check_status",
+          invoice_id: localStorage.getItem("invoice_id")
+        }),
+      });
+
+      const result = await res.json();
+
+
+      if (result.success && result.data && result.data.status !== "failed" &&
+        result.data.status !== "expired") {
+        setPaymentLocked(true);
+        const activePayment = result.data.payment_method;
+
+        if (activePayment) {
+          const methodIndex = indexmethod.find(
+            (m) => m.code === activePayment
+          )?.id;
+
+          if (methodIndex) setindexpay(methodIndex);
+          console.log(methodIndex)
+          setPaymentLocked(true);
+        } else {
+          console.error("Failed to fetch pembayaran possibly empty or expired");
+        }
+      } else {
+        setPaymentLocked(false);
+      }
+    };
+
+    fetchPaymentStatus();
   }, []);
   const fetchPembayaran = async () => {
     setLoading(true);
@@ -78,25 +137,23 @@ export default function PembayaranPage() {
 
       if (result.success) {
         setPembayaranList(result.data);
-      } else {
-        console.error("Failed to fetch pembayaran:", result.message);
       }
     } catch (error) {
       console.error("Error fetching pembayaran:", error);
     } finally {
       setLoading(false);
-    }
-  };
+    };
+  }
 
 
   const createPayment = async (jalurId: number) => {
     setCreating(true);
-
+    const selectedMethod = indexmethod.find((m) => m.id === indexpay);
     try {
       const response = await fetch('/api/pembayaran/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create_payment', jalur_id: jalurId })
+        body: JSON.stringify({ action: 'create_payment', jalur_id: jalurId, paymethod: selectedMethod?.code || "VC", })
       });
 
       const result = await response.json();
@@ -110,6 +167,7 @@ export default function PembayaranPage() {
             confirmButtonText: "Ok"
           }).then(() => { window.location.reload });
         }
+        localStorage.setItem("invoice_id", result.data.invoice_id);
         fetchPembayaran();
       } else {
         if (window.Swal) {
@@ -133,6 +191,7 @@ export default function PembayaranPage() {
       }
     } finally {
       setCreating(false);
+      setPaymentLocked(true);
     }
   };
 
@@ -169,13 +228,6 @@ export default function PembayaranPage() {
     }
   };
 
-  const indexmethod = [
-    {
-      id: 1,
-      paymethod: ""
-    }
-  ]
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -197,6 +249,7 @@ export default function PembayaranPage() {
           <div className="text-sm text-yellow-800">
             <p className="font-medium">Perhatian:</p>
             <p className="mt-1">Semua biaya yang sudah dibayarkan tidak dapat dikembalikan</p>
+            <p className="mt-1">dan saat proses membayar, metode pembayaran tidak bisa diganti!</p>
           </div>
         </div>
       </div>
@@ -210,31 +263,47 @@ export default function PembayaranPage() {
         <div className="p-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
             <button className={indexpay === 1 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
-              onClick={() => setindexpay(1)}
+              onClick={() => { if (!paymentLocked) setindexpay(1) }}
             >
               <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg" className="h-4" alt="BNI" />
               <span className="text-sm">Virtual Account</span>
             </button>
             <button className={indexpay === 2 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
-              onClick={() => setindexpay(2)}
+              onClick={() => { if (!paymentLocked) setindexpay(2) }}
             >
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/BANK_BRI_logo_%28vertical%29.svg/640px-BANK_BRI_logo_%28vertical%29.svg.png" className="h-5" alt="BRI" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1199px-Bank_Central_Asia.svg.png?20200318082802" className="h-5" alt="BRI" />
               <span className="text-sm">Virtual Account</span>
             </button>
-            <button className={indexpay === 3 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
-              onClick={() => setindexpay(3)}
+            <button className={`flex items-center h-16 gap-2 p-3 rounded-lg bg-white transition-colors
+    ${indexpay === 3
+                ? "outline-3 outline-blue-500 hover:outline-4"
+                : "outline hover:bg-blue-50"}
+    ${true
+                ? "opacity-60 cursor-not-allowed hover:bg-white hover:outline hover:outline-red-500"
+                : "cursor-pointer"}
+  `}
+              onClick={() => { if (!paymentLocked) setindexpay(3) }}
+              disabled={true}
             >
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/640px-Logo_QRIS.svg.png" className="h-4" alt="QRIS" />
               <span className="text-sm">QRIS</span>
             </button>
             <button className={indexpay === 4 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
-              onClick={() => setindexpay(4)}
+              onClick={() => { if (!paymentLocked) setindexpay(4) }}
             >
               <i className="fa-brands fa-cc-visa text-blue-700 text-xl"></i>
               <span className="text-sm">Kartu Kredit</span>
             </button>
-            <button className={indexpay === 5 ? "flex items-center h-16 gap-2 p-3 outline-3 outline-blue-500 rounded-lg bg-white hover:outline-4 cursor-pointer transition-colors" : "flex items-center h-16 gap-2 p-3 outline rounded-lg bg-white hover:bg-blue-50 cursor-pointer transition-colors"}
-              onClick={() => setindexpay(5)}
+            <button className={`flex items-center h-16 gap-2 p-3 rounded-lg bg-white transition-colors
+    ${indexpay === 3
+                ? "outline-3 outline-blue-500 hover:outline-4"
+                : "outline hover:bg-blue-50"}
+    ${true
+                ? "opacity-60 cursor-not-allowed hover:bg-white hover:outline hover:outline-red-500"
+                : "cursor-pointer"}
+  `}
+              onClick={() => { if (!paymentLocked) setindexpay(5) }}
+              disabled={true}
             >
               <i className="fa-solid fa-wallet text-green-600 text-xl"></i>
               <span className="text-sm">E-Wallet</span>
@@ -255,7 +324,7 @@ export default function PembayaranPage() {
               <i className="fa-solid fa-receipt text-4xl text-gray-300 mb-4"></i>
               <p className="text-gray-500">Belum ada riwayat pembayaran</p>
               <button
-                onClick={() => jalur && createPayment(jalur.id)}
+                onClick={() => { if (jalur) { createPayment(jalur.id) } }}
                 disabled={!jalur}
                 className="mt-4 w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
               >
@@ -280,11 +349,12 @@ export default function PembayaranPage() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {pembayaranList.map((payment) => (
                       <tr key={payment.id} className="hover:bg-gray-50">
-                        {/* Debug log inline */}
-                        {(() => {
-                          console.log("payment row:", payment);
+                        {/* {(() => {
+                          if (payment.status === "expired") {
+                            paymentLocked
+                          }
                           return null;
-                        })()}
+                        })()} */}
                         <td className="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">{payment.invoice_id}</td>
                         <td className="px-6 py-4 whitespace-normal text-sm text-gray-900">{payment.jalur_nama}</td>
                         <td className="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">{formatCurrency(payment.amount)}</td>
@@ -312,7 +382,7 @@ export default function PembayaranPage() {
                             <div className='px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
                               <i className="fa-solid fa-arrows-rotate mr-1"></i>
                               <button
-                                onClick={() => jalur && createPayment(jalur.id)}
+                                onClick={() => { if (jalur) { createPayment(jalur.id) } }}
                                 disabled={!jalur}>
                                 {creating ? 'Proses...' : "Buat Lagi"}
                               </button>
@@ -330,10 +400,10 @@ export default function PembayaranPage() {
                 {pembayaranList.map((payment) => (
                   <div key={payment.id} className="p-4 border rounded-lg shadow-sm">
                     {/* Debug log inline */}
-                    {(() => {
+                    {/* {(() => {
                       console.log("payment row:", payment);
                       return null;
-                    })()}
+                    })()} */}
                     <div className="text-sm font-medium text-gray-900">Invoice: {payment.invoice_id}</div>
                     <div className="text-sm text-gray-600">Jalur: {payment.jalur_nama}</div>
                     <div className="text-sm font-medium text-gray-900">Jumlah: {formatCurrency(payment.amount)}</div>
@@ -361,7 +431,7 @@ export default function PembayaranPage() {
                         <div className='block w-full text-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
                           <i className="fa-solid fa-arrows-rotate mr-1"></i>
                           <button
-                            onClick={() => jalur && createPayment(jalur.id)}
+                            onClick={() => { if (jalur) { createPayment(jalur.id) } }}
                             disabled={!jalur}>
                             {creating ? 'Proses...' : "Buat Lagi"}
                           </button>

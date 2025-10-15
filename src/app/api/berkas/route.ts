@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
 
             const conn = await pool.getConnection();
             try {
-                const [oldRows]: any = await conn.execute(
+                const [oldRows]: any = await pool.execute(
                     "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
                     [userId, jenis_berkas]
                 );
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
                 }
 
                 // Insert or update
-                await conn.execute(
+                await pool.execute(
                     `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
                 VALUES (?, ?, ?, ?, ?) 
                 ON DUPLICATE KEY UPDATE 
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
 
             const conn = await pool.getConnection();
             try {
-                const [oldRows]: any = await conn.execute(
+                const [oldRows]: any = await pool.execute(
                     "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
                     [userId, jenis_berkas]
                 );
@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
                 }
 
                 // Insert or update
-                await conn.execute(
+                await pool.execute(
                     `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
                 VALUES (?, ?, ?, ?, ?) 
                 ON DUPLICATE KEY UPDATE 

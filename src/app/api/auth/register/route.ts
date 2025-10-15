@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       nama,
       tanggal_lahir,
       wa,
-      nik,
+      nisn,
       lemdik,
       jurusan,
     } = body;
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       !nama ||
       !tanggal_lahir ||
       !wa ||
-      !nik ||
+      !nisn ||
       !lemdik ||
       !jurusan
     ) {
@@ -60,12 +60,12 @@ export async function POST(req: Request) {
       });
     }
 
-    // Check for duplicate NIK
-    const [nikRows] = await pool.execute("SELECT id FROM users WHERE nik = ?", [nik]);
-    if ((nikRows as any[]).length > 0) {
+    // Check for duplicate nisn
+    const [nisnRows] = await pool.execute("SELECT id FROM users WHERE nisn = ?", [nisn]);
+    if ((nisnRows as any[]).length > 0) {
       return NextResponse.json({
         success: false,
-        message: "NIK sudah digunakan untuk pendaftaran",
+        message: "nisn sudah digunakan untuk pendaftaran",
       });
     }
 
@@ -74,9 +74,9 @@ export async function POST(req: Request) {
 
     // Insert user
     const [insertResult]: any = await pool.execute(
-      `INSERT INTO users (email, password, nama, tanggal_lahir, wa, nik, sekolah_id, jurusan)
+      `INSERT INTO users (email, password, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [email, hashedPassword, nama, tanggal_lahir, wa, nik, sekolah_id, jurusan]
+      [email, hashedPassword, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan]
     );
 
     const newUserId = insertResult.insertId;

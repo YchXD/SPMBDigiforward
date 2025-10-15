@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   useEffect(() => {
     checkUserStatus();
-  }, []);
+  }, [pathname]);
 
   const checkUserStatus = async () => {
     try {
@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       if (result.success) {
         setUserStatus(result.data);
 
-        // Check access restrictions
+        // Check access 
         const restrictedPaths = ['/dashboard/datadiri', '/dashboard/berkas', '/dashboard/pembayaran', '/dashboard/kartu'];
         if (restrictedPaths.includes(pathname) && !result.data.jalur) {
           router.push('/dashboard/jalur');
@@ -101,7 +101,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
     md:translate-x-0`}
       >
-
         <div>
           <div className="flex items-center justify-center mb-6">
             <img src="/images/favicon.png" alt="SMK Antartika 2" className="h-10" />
@@ -153,7 +152,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         if (!item.enabled) {
                           e.preventDefault();
                         }
-                        setOpen(false); // close dropdown on click
+                        setOpen(false); 
                       }}
                     >
                       <i className={`fa-solid ${item.icon}`}></i>

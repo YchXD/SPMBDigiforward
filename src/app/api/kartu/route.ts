@@ -27,7 +27,7 @@ export async function GET() {
 
   try {
     // Fetch kartu info
-    const [kartuRows]: any = await conn.execute(
+    const [kartuRows]: any = await pool.execute(
       `SELECT k.*, u.nama, u.email, u.wa, u.jurusan, s.nama AS sekolah_nama
        FROM kartu k
        JOIN users u ON k.user_id = u.id
@@ -42,7 +42,7 @@ export async function GET() {
     }
 
     // Fetch foto berkas
-    const [berkasRows]: any = await conn.execute(
+    const [berkasRows]: any = await pool.execute(
       `SELECT jenis_berkas, nama_file, path_file, ukuran_file, uploaded_at FROM berkas WHERE user_id = ? AND jenis_berkas = 'foto' ORDER BY jenis_berkas ASC`,
       [userId]
     );
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
   try {
     // Check if user has paid
-    const [paymentCheckRows]: any = await conn.execute(
+    const [paymentCheckRows]: any = await pool.execute(
       `SELECT COUNT(*) AS paid_count FROM pembayaran WHERE user_id = ? AND status = 'paid'`,
       [userId]
     );
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
     const nomorPeserta = `${new Date().getFullYear()}-${String(userId).padStart(5, "0")}`;
 
     // Insert or update kartu
-    await conn.execute(
+    await pool.execute(
       `INSERT INTO kartu (user_id, nomor_peserta, status)
        VALUES (?, ?, 'active')
        ON DUPLICATE KEY UPDATE

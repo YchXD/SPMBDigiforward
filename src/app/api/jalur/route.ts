@@ -23,7 +23,7 @@ export async function GET() {
     }
     const conn = await pool.getConnection();
 
-    const [jalurRows] = await conn.execute(
+    const [jalurRows] = await pool.execute(
       "SELECT * FROM jalur ORDER BY periode_mulai ASC"
     );
 
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     const conn = await pool.getConnection();
 
     // ✅ Check jalur exists and active
-    const [jalurRows] = await conn.execute(
+    const [jalurRows] = await pool.execute(
       "SELECT * FROM jalur WHERE id = ? AND status = 'aktif'",
       [jalur_id]
     );
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     }
 
     // ✅ Check if user already selected a jalur
-    const [userJalurRows] = await conn.execute(
+    const [userJalurRows] = await pool.execute(
       "SELECT id FROM user_jalur WHERE user_id = ?",
       [userId]
     );
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
     }
 
     // ✅ Insert user_jalur
-    await conn.execute(
+    await pool.execute(
       "INSERT INTO user_jalur (user_id, jalur_id, status) VALUES (?, ?, 'aktif')",
       [userId, jalur_id]
     );
