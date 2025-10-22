@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
     }
 
     // === Update database ===
-    const conn = await pool.getConnection();
     try {
       const [result] = await pool.execute(
         "UPDATE pembayaran SET status = 'paid', paid_at = NOW() WHERE invoice_id = ?",
@@ -49,7 +48,6 @@ export async function POST(req: NextRequest) {
       logs.push(`${logPrefix} - DB UPDATED: ${JSON.stringify(data)}`);
       console.log("Duitku callback received:", data);
     } finally {
-      conn.release();
     }
 
     await writeLog(logs);

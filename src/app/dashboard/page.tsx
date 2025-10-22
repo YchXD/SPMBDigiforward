@@ -25,7 +25,7 @@ export default function Dashboard() {
       const response = await fetch('/api/user', { credentials: "include" });
       const result = await response.json();
       console.log(result)
-      
+
       if (result.success) {
         setUserStatus(result.data);
       }
@@ -88,13 +88,12 @@ export default function Dashboard() {
           </div>
           <div>
             <p className="text-sm text-gray-500">Status Pembayaran</p>
-            <span className={`px-2 py-1 text-xs rounded-full ${
-              userStatus.payment_status === 'paid' ? 'bg-green-100 text-green-800' :
-              userStatus.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-gray-100 text-gray-800'
-            }`}>
+            <span className={`px-2 py-1 text-xs rounded-full ${userStatus.payment_status === 'paid' ? 'bg-green-100 text-green-800' :
+                userStatus.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-gray-100 text-gray-800'
+              }`}>
               {userStatus.payment_status === 'paid' ? 'Lunas' :
-               userStatus.payment_status === 'pending' ? 'Menunggu' : 'Belum Bayar'}
+                userStatus.payment_status === 'pending' ? 'Menunggu' : 'Belum Bayar'}
             </span>
           </div>
         </div>
@@ -104,7 +103,7 @@ export default function Dashboard() {
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-bold text-gray-900">Alur Pendaftaran</h2>
-          <button 
+          <button
             onClick={() => setShowModal(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
           >
@@ -112,7 +111,7 @@ export default function Dashboard() {
             Panduan
           </button>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           {[
             { step: 1, label: 'Pilih Jalur', icon: 'fa-route' },
@@ -123,17 +122,15 @@ export default function Dashboard() {
           ].map((item, index) => (
             <div key={item.step} className="flex items-center">
               <div className="flex flex-col items-center">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  getStepStatus(item.step) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${getStepStatus(item.step) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
+                  }`}>
                   <i className={`fa-solid ${item.icon}`}></i>
                 </div>
                 <p className="text-xs mt-2 text-center">{item.label}</p>
               </div>
               {index < 4 && (
-                <div className={`hidden sm:block w-16 h-0.5 mx-4 ${
-                  getStepStatus(item.step + 1) ? 'bg-green-500' : 'bg-gray-200'
-                }`}></div>
+                <div className={`hidden sm:block w-16 h-0.5 mx-4 ${getStepStatus(item.step + 1) ? 'bg-green-500' : 'bg-gray-200'
+                  }`}></div>
               )}
             </div>
           ))}
@@ -154,7 +151,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-green-100">
@@ -168,7 +165,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-yellow-100">
@@ -180,7 +177,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-purple-100">
@@ -195,34 +192,35 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      
+
       {/* Modal Panduan */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white w-full max-w-4xl rounded-xl shadow-lg p-6 relative max-h-[90vh] overflow-y-auto">
-            <button 
+            <button
               onClick={() => setShowModal(false)}
               className="absolute top-3 right-3 text-gray-600 hover:text-black"
             >
               <i className="fa-solid fa-xmark text-xl"></i>
             </button>
-            
+
             <h2 className="text-xl font-bold mb-4">Panduan Pendaftaran PPDB</h2>
-            
-            <div className="grid md:grid-cols-2 text-sm leading-relaxed">
-              <div>
+
+            <div className="grid md:grid-cols-2 text-sm leading-relaxed rounded-md overflow-hidden">
+              <div className='h-full object-cover'>
+                <img src="/images/instruksi.png" alt="instruksi" className='h-full rounded-xl'/>
+              </div>
+              <div className='mt-3 md:ml-3'>
                 <p><span className="font-bold">1. Pilih Jalur:</span> Pilih jalur pendaftaran yang sesuai dengan periode dan biaya yang tersedia.</p>
                 <p className="mt-2"><span className="font-bold">2. Bayar Pendaftaran:</span> Lakukan pembayaran sesuai nominal yang tertera melalui metode pembayaran yang tersedia.</p>
                 <p className="mt-2"><span className="font-bold">3. Isi Data Diri:</span> Lengkapi data diri, data orang tua, dan informasi asal sekolah dengan benar.</p>
-              </div>
-              <div>
-                <p><span className="font-bold">4. Upload Berkas:</span> Upload dokumen yang diperlukan seperti KK, Akta, Ijazah, Foto, dan Rapor.</p>
+                <p className="mt-2"><span className="font-bold">4. Upload Berkas:</span> Upload dokumen yang diperlukan seperti KK, Akta, Ijazah, Foto, dan Rapor.</p>
                 <p className="mt-2"><span className="font-bold">5. Kartu Peserta:</span> Setelah semua tahap selesai, download kartu peserta untuk keperluan verifikasi.</p>
               </div>
             </div>
-            
+
             <div className="mt-6 flex justify-end">
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
                 className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
               >

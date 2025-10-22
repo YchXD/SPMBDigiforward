@@ -32,8 +32,6 @@ export async function GET() {
         return value === undefined ? null : value;
     }
 
-
-    // Fetch same data as PHP version
     const [userRows] = await pool.execute(
       `
       SELECT u.id,u.email,u.nama,u.tanggal_lahir,u.jurusan, s.nama AS sekolah_nama

@@ -23,8 +23,6 @@ export async function GET() {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
-  const conn = await pool.getConnection();
-
   try {
     // Fetch kartu info
     const [kartuRows]: any = await pool.execute(
@@ -60,7 +58,6 @@ export async function GET() {
       { status: 500 }
     );
   } finally {
-    conn.release();
   }
 }
 
@@ -69,8 +66,6 @@ export async function POST(req: Request) {
   if (!userId) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
-
-  const conn = await pool.getConnection();
   const { action } = await req.json();
 
   if (action !== "generate") {
@@ -116,6 +111,5 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   } finally {
-    conn.release();
   }
 }

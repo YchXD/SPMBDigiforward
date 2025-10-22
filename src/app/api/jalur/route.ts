@@ -21,13 +21,10 @@ export async function GET() {
     if (!userId) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    const conn = await pool.getConnection();
 
     const [jalurRows] = await pool.execute(
       "SELECT * FROM jalur ORDER BY periode_mulai ASC"
     );
-
-    conn.release();
 
     return NextResponse.json({ success: true, data: jalurRows });
   } catch (err: any) {
@@ -59,8 +56,6 @@ export async function POST(req: Request) {
       );
     }
 
-    const conn = await pool.getConnection();
-
     // ✅ Check jalur exists and active
     const [jalurRows] = await pool.execute(
       "SELECT * FROM jalur WHERE id = ? AND status = 'aktif'",
@@ -68,7 +63,6 @@ export async function POST(req: Request) {
     );
     const jalur = (jalurRows as any[])[0];
     if (!jalur) {
-      await conn.end();
       return NextResponse.json({
         success: false,
         message: "Jalur tidak ditemukan atau tidak aktif",
@@ -81,7 +75,6 @@ export async function POST(req: Request) {
       [userId]
     );
     if ((userJalurRows as any[]).length > 0) {
-      conn.release();
       return NextResponse.json({
         success: false,
         message: "Anda sudah memilih jalur pendaftaran",
@@ -93,8 +86,6 @@ export async function POST(req: Request) {
       "INSERT INTO user_jalur (user_id, jalur_id, status) VALUES (?, ?, 'aktif')",
       [userId, jalur_id]
     );
-
-    conn.release();
 
     return NextResponse.json({
       success: true,

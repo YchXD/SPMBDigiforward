@@ -24,7 +24,6 @@ export async function GET() {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    const conn = await pool.getConnection();
     try {
       const [rows]: any = await pool.execute(
         "SELECT * FROM data_diri WHERE user_id = ?",
@@ -42,7 +41,6 @@ export async function GET() {
 
       return NextResponse.json({ success: true, data });
     } finally {
-      conn.release();
     }
   } catch (err: any) {
     console.error("GET error:", err);
@@ -79,7 +77,6 @@ export async function POST(req: NextRequest) {
 
     const dateOnly = input.tanggal_lahir.split('T')[0];
 
-    const conn = await pool.getConnection();
     try {
       const [exists]: any = await pool.execute(
         "SELECT id FROM data_diri WHERE user_id = ?",
@@ -156,8 +153,8 @@ export async function POST(req: NextRequest) {
       );
 
       return NextResponse.json({ success: true, message: "Data diri berhasil disimpan" });
-    } finally {
-      conn.release();
+    } catch {
+
     }
   } catch (err: any) {
     console.error("POST error:", err);

@@ -61,18 +61,17 @@ export default function PembayaranPage() {
     },
   ]
 
-
   useEffect(() => {
     fetchPembayaran();
     fetch("/api/user_jalur")
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          console.log("Fetched:", data);
+          //console.log("Fetched:", data);
           setJalur(data.user_jalur);
         }
       });
-    fetchPembayaran();
+    fetchPaymentStatus();
   }, []);
   useEffect(() => {
     fetchPembayaran().then(async () => {
@@ -89,43 +88,6 @@ export default function PembayaranPage() {
     });
   }, []);
   const [jalur, setJalur] = useState<any>(null);
-  useEffect(() => {
-    const fetchPaymentStatus = async () => {
-      const res = await fetch("/api/pembayaran/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "check_status",
-          invoice_id: localStorage.getItem("invoice_id")
-        }),
-      });
-
-      const result = await res.json();
-
-
-      if (result.success && result.data && result.data.status !== "failed" &&
-        result.data.status !== "expired") {
-        setPaymentLocked(true);
-        const activePayment = result.data.payment_method;
-
-        if (activePayment) {
-          const methodIndex = indexmethod.find(
-            (m) => m.code === activePayment
-          )?.id;
-
-          if (methodIndex) setindexpay(methodIndex);
-          console.log(methodIndex)
-          setPaymentLocked(true);
-        } else {
-          console.error("Failed to fetch pembayaran possibly empty or expired");
-        }
-      } else {
-        setPaymentLocked(false);
-      }
-    };
-
-    fetchPaymentStatus();
-  }, []);
   const fetchPembayaran = async () => {
     setLoading(true);
     try {
@@ -134,9 +96,14 @@ export default function PembayaranPage() {
       });
 
       const result = await response.json();
+      console.log(result)
 
       if (result.success) {
         setPembayaranList(result.data);
+        //console.log("raw:", result.data)
+        const invoiceonly = result.data.find((invoiceonly: { invoice_id: any; }) => invoiceonly.invoice_id)
+        localStorage.setItem("invoice_id", invoiceonly.invoice_id);
+        //console.log("invoice only:", invoiceonly.invoice_id)
       }
     } catch (error) {
       console.error("Error fetching pembayaran:", error);
@@ -144,7 +111,39 @@ export default function PembayaranPage() {
       setLoading(false);
     };
   }
+  const fetchPaymentStatus = async () => {
+    console.log(localStorage.getItem("invoice_id"))
+    const res = await fetch("/api/pembayaran/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "check_status",
+        invoice_id: localStorage.getItem("invoice_id")
+      }),
+    });
 
+    const result = await res.json();
+
+    if (result.success && result.data && result.data.status !== "failed" &&
+      result.data.status !== "expired") {
+      setPaymentLocked(true);
+      const activePayment = result.data.payment_method;
+
+      if (activePayment) {
+        const methodIndex = indexmethod.find(
+          (m) => m.code === activePayment
+        )?.id;
+
+        if (methodIndex) setindexpay(methodIndex);
+        console.log(methodIndex)
+        setPaymentLocked(true);
+      } else {
+        console.error("Failed to fetch pembayaran possibly empty or expired");
+      }
+    } else {
+      setPaymentLocked(false);
+    }
+  };
 
   const createPayment = async (jalurId: number) => {
     setCreating(true);
@@ -379,7 +378,7 @@ export default function PembayaranPage() {
                             </span>
                           )}
                           {payment.status === "expired" && payment.allowRetry && (
-                            <div className='px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
+                            <div className='px-3 w-fit py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
                               <i className="fa-solid fa-arrows-rotate mr-1"></i>
                               <button
                                 onClick={() => { if (jalur) { createPayment(jalur.id) } }}

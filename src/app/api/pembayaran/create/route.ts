@@ -50,8 +50,12 @@ export async function GET() {
       `,
       [safeParam(userId)]
     );
-
-    return NextResponse.json({ success: true, data: rows });
+    if (rows.length > 0){
+      return NextResponse.json({ success: true, data: rows });
+    } else {
+      return NextResponse.json({ success: false, data: null });
+    }
+    
   } catch (err: any) {
     console.error("Payment GET error:", err);
     return NextResponse.json(
@@ -161,7 +165,7 @@ export async function POST(req: Request) {
         [safeParam(invoice_id), safeParam(userId)]
       );
       const payment = rows[0];
-      console.log(payment)
+      console.log("payment:",payment)
       if (!payment) {
         return NextResponse.json({ success: false, message: "Pembayaran tidak ditemukan" });
       }

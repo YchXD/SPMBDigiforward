@@ -91,7 +91,6 @@ export async function POST(req: NextRequest) {
                 contentType: file.type || "application/octet-stream",
             });
 
-            const conn = await pool.getConnection();
             try {
                 const [oldRows]: any = await pool.execute(
                     "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
@@ -114,8 +113,8 @@ export async function POST(req: NextRequest) {
                     [userId, jenis_berkas, originalName, url, file.size]
                 );
                 //console.log("🗃️ Insert success");
-            } finally {
-                conn.release();
+            } catch {
+                console.log("error check berkas route")
             }
 
             return NextResponse.json({ success: true, message: "Berkas berhasil diupload" });
@@ -135,7 +134,6 @@ export async function POST(req: NextRequest) {
 
             const relativePath = path.join("../uploads/berkas", String(userId), filename).replace(/\\/g, "/");
 
-            const conn = await pool.getConnection();
             try {
                 const [oldRows]: any = await pool.execute(
                     "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
@@ -159,7 +157,7 @@ export async function POST(req: NextRequest) {
                 );
                 //console.log("🗃️ Insert success");
             } finally {
-                conn.release();
+                
             }
 
             return NextResponse.json({ success: true, message: "Berkas berhasil diupload" });
