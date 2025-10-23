@@ -55,12 +55,12 @@ export default function KartuPage() {
             {/* Phone */}
             <div className="flex items-center gap-2 text-gray-700">
               <i className="fa-solid fa-phone"></i>
-              <span>62-antartika-2</span>
+              <span>6285183103656</span>
             </div>
 
             {/* WhatsApp Button */}
             <a
-              href="https://wa.me/"
+              href="https://wa.me/6285183103656"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-green-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-600 transition"

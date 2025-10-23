@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import pool from "@/lib/db";
 import fs from "fs";
 import path from "path";
-import { put } from "@vercel/blob";
+import { put,del } from "@vercel/blob";
 import { randomUUID } from "crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: "Format file tidak didukung" });
         }
 
-        if (process.env.VERCEL) {
+        if (process.env.VERCEL === "true") {
             const filename = `${jenis_berkas}_${Date.now()}_${randomUUID()}.${ext}`;
             const blobPath = `uploads/berkas/${userId}/${filename}`;
 
@@ -97,9 +97,11 @@ export async function POST(req: NextRequest) {
                     [userId, jenis_berkas]
                 );
                 const oldFile = oldRows[0];
-                if (oldFile && fs.existsSync(path.join(process.cwd(), "public", oldFile.path_file))) {
-                    fs.unlinkSync(path.join(process.cwd(), "public", oldFile.path_file));
-                }
+                console.log(oldFile.path_file)
+                // if (oldFile && fs.existsSync(path.join(process.cwd(), "public", oldFile.path_file))) {
+                //     fs.unlinkSync(path.join(process.cwd(), "public", oldFile.path_file));
+                // }
+                await del(oldFile.path_file)
 
                 // Insert or update
                 await pool.execute(
@@ -109,7 +111,8 @@ export async function POST(req: NextRequest) {
                 nama_file = VALUES(nama_file), 
                 path_file = VALUES(path_file), 
                 ukuran_file = VALUES(ukuran_file),
-                uploaded_at = NOW()`,
+                uploaded_at = NOW(),
+                status = "pending"`,
                     [userId, jenis_berkas, originalName, url, file.size]
                 );
                 //console.log("🗃️ Insert success");
@@ -152,14 +155,14 @@ export async function POST(req: NextRequest) {
                 nama_file = VALUES(nama_file), 
                 path_file = VALUES(path_file), 
                 ukuran_file = VALUES(ukuran_file),
-                uploaded_at = NOW()`,
+                uploaded_at = NOW(),
+                status = "pending"`,
                     [userId, jenis_berkas, originalName, relativePath, file.size]
                 );
                 //console.log("🗃️ Insert success");
             } finally {
                 
             }
-
             return NextResponse.json({ success: true, message: "Berkas berhasil diupload" });
         }
     } catch (err: any) {

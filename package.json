@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "concurrently \"next dev\"",
+    "dev": "next dev",
     "build": "next build",
-    "start": "concurrently \"next start\" \"node whatsapp-service/index.js\"",
+    "start": "next start",
     "lint": "next lint",
     "php-server": "php -S localhost:8080 -t api/"
   },

@@ -48,9 +48,9 @@ export async function GET(
       fileBuffer = await fs.readFile(filePath);
     } catch {
       // fallback: fetch from blob if on Vercel
-      if (process.env.VERCEL) {
+      if (process.env.VERCEL === "true") {
         const blobPath = filePathArr.join("/");
-        const blobUrl = `https://ed5uvumrhqqw9cs3.public.blob.vercel-storage.com/${blobPath}`;
+        const blobUrl = `https://ed5uvumrhqqw9cs3.public.blob.vercel-storage.com/uploads/${blobPath}`;
         console.log("Fetching blob:", blobUrl);
 
         const res = await fetch(blobUrl);

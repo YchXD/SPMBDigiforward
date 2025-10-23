@@ -1,4 +1,13 @@
-"use client";
+// "use client";
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "SPMB Antartika",
+  description: "Sistem Pendaftaran Peserta Didik Baru",
+  icons: "/favicon.png",
+};
+
 
 export default function RootLayout({
   children,
