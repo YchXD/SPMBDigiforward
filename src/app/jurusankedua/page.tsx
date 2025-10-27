@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft } from '@fortawesome/free-solid-svg-icons'
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-export default function jurusan() {
+function JurusanKeduaContent() {
   const searchParams = useSearchParams();
   const jurusanutama = searchParams.get('jurusan');
   const handlejurusanSelection = (jurusanbackup: string) => {
@@ -209,5 +209,12 @@ export default function jurusan() {
         </div>
       </div>
     </div>
+  );
+}
+export default function JurusanKedua() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+      <JurusanKeduaContent />
+    </Suspense>
   );
 }
