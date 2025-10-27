@@ -1,5 +1,6 @@
 'use client';
 
+import { Span } from 'next/dist/trace';
 import { useState, useEffect } from 'react';
 
 interface UserStatus {
@@ -84,7 +85,7 @@ export default function Dashboard() {
           </div>
           <div>
             <p className="text-sm text-gray-500">Jurusan</p>
-            <p className="font-medium">{userStatus.user.jurusan || 'Failed to reach'}</p>
+            <p className="font-medium">{userStatus.user.jurusan || 'Failed to reach'} / {userStatus.user.jurusanbackup || 'Kosong / Tidak dipilih'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Status Pembayaran</p>

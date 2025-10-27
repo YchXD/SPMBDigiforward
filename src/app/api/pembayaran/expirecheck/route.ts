@@ -31,7 +31,6 @@ export async function GET() {
             );
         }
 
-        // Fetch all invoices for this user
         const [rows]: [any[], any] = await pool.execute(
             `
   SELECT p.*, j.nama AS jalur_nama, j.biaya AS jalur_biaya
@@ -46,15 +45,15 @@ export async function GET() {
         if (rows.length > 0) {
             const hasPaid = rows.some((p) => p.status === "paid");
             const hasPending = rows.some((p) => p.status === "pending");
+            const hasfailed = rows.some((p) => p.status === "failed");
 
             if (hasPaid) {
-                // If any paid exists, no retries allowed at all
                 for (const payment of rows) payment.allowRetry = false;
             } else if (hasPending) {
-                // If a pending invoice exists, don't allow retries either
                 for (const payment of rows) payment.allowRetry = false;
+            } else if (hasfailed) {
+                for (const payment of rows) payment.allowRetry = true;
             } else {
-                // Otherwise mark only the most recent expired invoice
                 let retryMarked = false;
                 for (const payment of rows) {
                     if (payment.status === "expired" && !retryMarked) {

@@ -377,7 +377,7 @@ export default function PembayaranPage() {
                               Selesai
                             </span>
                           )}
-                          {payment.status === "expired" && payment.allowRetry && (
+                          {payment.status === "expired" || payment.status === "failed" && payment.allowRetry && (
                             <div className='px-3 w-fit py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
                               <i className="fa-solid fa-arrows-rotate mr-1"></i>
                               <button
@@ -426,7 +426,7 @@ export default function PembayaranPage() {
                           Selesai
                         </span>
                       )}
-                      {payment.status === "expired" && payment.allowRetry && (
+                      {payment.status === "expired" || payment.status === "failed" && payment.allowRetry && (
                         <div className='block w-full text-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
                           <i className="fa-solid fa-arrows-rotate mr-1"></i>
                           <button

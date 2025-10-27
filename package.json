@@ -20,6 +20,7 @@
     "mysql2": "^3.15.1",
     "next": "^15.5.4",
     "nodemailer": "^7.0.9",
+    "qrcode": "^1.5.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sweetalert2": "^11.23.0"
@@ -29,6 +30,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "24.5.2",
     "@types/nodemailer": "^7.0.2",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.1.13",
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",

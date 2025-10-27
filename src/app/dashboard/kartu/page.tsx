@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import html2canvas from "html2canvas-pro";
+import qrcode from 'qrcode';
 
 interface Kartu {
   id: number;
@@ -28,10 +29,22 @@ export default function KartuPage() {
   const [kartu, setKartu] = useState<Kartu | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [qrcodeUrl, setQrcodeUrl] = useState<string>("");
 
   useEffect(() => {
     fetchKartu();
+    generateqr();
   }, []);
+  const generateqr = async () => {
+    let thastring = kartu?.nomor_peserta || "default";
+    qrcode.toDataURL(thastring, function (err, url) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      setQrcodeUrl(url);
+    });
+  }
 
   const fetchKartu = async () => {
     try {
@@ -95,17 +108,12 @@ export default function KartuPage() {
     }
   };
 
-  // const handlePrint = () => {
-  //   window.print();
-  // };
   const printRef = useRef<HTMLDivElement>(null);
   const handlePrint = () => {
     if (!printRef.current) return;
 
-    // Tambah class khusus supaya hanya div ini yang tampil di print
     printRef.current.classList.add("print-only");
     window.print();
-    // Hapus class lagi setelah selesai
     setTimeout(() => {
       printRef.current?.classList.remove("print-only");
     }, 1000);
@@ -113,15 +121,6 @@ export default function KartuPage() {
 
 
   const handleDownload = async () => {
-    // Implement download functionality
-    // if (window.Swal) {
-    //   window.Swal.fire({
-    //     title: "Info",
-    //     text: "Fitur download akan segera tersedia",
-    //     icon: "info",
-    //     confirmButtonText: "Ok"
-    //   });
-    // }
     const element = document.getElementById("downloadable");
     if (!element) return;
 
@@ -137,6 +136,10 @@ export default function KartuPage() {
     link.download = `${kartu?.nama}_SPMB${kartu?.nomor_peserta}.png`;
     link.click();
   };
+
+  function qrcodegenerate(teks: string) {
+    
+  }
 
   if (loading) {
     return (
@@ -195,8 +198,8 @@ export default function KartuPage() {
                 <div className="p-6">
                   <div className="flex gap-4">
                     {/* Foto */}
-                    <div className="w-20 h-24 bg-gray-200 rounded-md overflow-hidden flex items-center justify-center">
-                      <img className='object-cover h-full w-full' src={`/files/berkas/${kartu.user_id}/${kartu.filename}`} alt="Foto 3x4"/>
+                    <div className="w-20 h-25 bg-gray-200 rounded-md overflow-hidden flex items-center justify-center">
+                      <img className='object-cover h-full w-full' src={`/files/berkas/${kartu.user_id}/${kartu.filename}`} alt="Foto 3x4" />
                     </div>
 
                     {/* Data */}
@@ -208,12 +211,16 @@ export default function KartuPage() {
                       <p><span className="font-semibold">Sekolah:</span> {kartu.sekolah_nama}</p>
                       <p><span className="font-semibold">Jurusan:</span> {kartu.jurusan}</p>
                     </div>
+
+                    <div className="w-15 h-15 bg-gray-200 rounded-md overflow-hidden flex items-center justify-center">
+                      <img className='object-cover h-full w-full' src={`${qrcodeUrl}`} alt="qrcode" />
+                    </div>
                   </div>
                 </div>
 
                 {/* Footer */}
                 <div className="bg-white text-blue-900 text-center text-xs py-2">
-                  Harap membawa kartu ini saat verifikasi & ujian seleksi
+                  Harap membawa kartu ini saat MPLS
                 </div>
               </div>
 
@@ -242,9 +249,9 @@ export default function KartuPage() {
         @media print {
           body * {
             visibility: hidden !important;
-            -webkit-print-color-adjust: exact !important; /* Safari & Chrome */
-            color-adjust: exact !important;               /* Firefox */
-            print-color-adjust: exact !important;         /* Spec terbaru */
+            -webkit-print-color-adjust: exact !important; 
+            color-adjust: exact !important;               
+            print-color-adjust: exact !important;         
           }
           .print-only,
           .print-only * {

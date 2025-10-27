@@ -56,7 +56,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Check jalur exists and active
     const [jalurRows] = await pool.execute(
       "SELECT * FROM jalur WHERE id = ? AND status = 'aktif'",
       [jalur_id]
@@ -69,7 +68,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // ✅ Check if user already selected a jalur
     const [userJalurRows] = await pool.execute(
       "SELECT id FROM user_jalur WHERE user_id = ?",
       [userId]
@@ -80,11 +78,30 @@ export async function POST(req: Request) {
         message: "Anda sudah memilih jalur pendaftaran",
       });
     }
+    interface JalurRow {
+      kuota: number;
+    }
+    const [kuotaRows] = await pool.execute(
+      "SELECT kuota FROM jalur WHERE id = ?",
+      [jalur_id]
+    );
+    const kuotaRow = kuotaRows as JalurRow[];
 
-    // ✅ Insert user_jalur
+    const totalkuota = kuotaRow[0].kuota
+    if (totalkuota === 0) {
+      console.log(totalkuota)
+        return NextResponse.json({
+        success: false,
+        message: "Jalur yang anda pilih sudah habis kuotanya!",
+      });
+    }
     await pool.execute(
       "INSERT INTO user_jalur (user_id, jalur_id, status) VALUES (?, ?, 'aktif')",
       [userId, jalur_id]
+    );
+    await pool.execute(
+      "UPDATE jalur SET kuota = kuota - 1 WHERE id = ?",
+      [jalur_id]
     );
 
     return NextResponse.json({

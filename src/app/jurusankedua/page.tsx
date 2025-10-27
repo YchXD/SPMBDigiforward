@@ -2,8 +2,9 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft } from '@fortawesome/free-solid-svg-icons'
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -12,30 +13,39 @@ declare global {
 }
 
 export default function jurusan() {
-  const handlejurusanSelection = (jurusan: string) => {
-    if (jurusan == typeof String) {
+  const searchParams = useSearchParams();
+  const jurusanutama = searchParams.get('jurusan');
+  const handlejurusanSelection = (jurusanbackup: string) => {
+    if (jurusanbackup == typeof String) {
 
     }
     if (typeof window !== 'undefined' && window.Swal) {
       window.Swal.fire({
         title: "Konfirmasi",
-        text: `Anda memilih jurusan ${jurusan}`,
+        text: `Anda memilih jurusan kedua ${jurusanbackup}`,
         icon: "question",
         showCancelButton: true,
         confirmButtonText: "Lanjut",
         cancelButtonText: "Batal"
       }).then((result: any) => {
         if (result.isConfirmed) {
-          window.location.href = `/jurusankedua?jurusan=${jurusan}`;
+          window.location.href = `/signup?jurusan=${jurusanutama}&jurusanbackup=${jurusanbackup}`;
         }
       });
     } else {
       // Fallback jika SweetAlert belum loaded
-      if (confirm(`Anda memilih jurusan ${jurusan}. Lanjutkan?`)) {
-        window.location.href = `/jurusankedua?jurusan=${jurusan}`;
+      if (confirm(`Anda memilih jurusan kedua ${jurusanbackup}. Lanjutkan?`)) {
+        window.location.href = `/signup?jurusan=${jurusanutama}&jurusanbackup=${jurusanbackup}`;
       }
     }
   };
+  useEffect(() => {
+    const jurusanutama = searchParams.get('jurusan');
+    if (!jurusanutama) {
+      window.location.href = '/jurusan';
+      return;
+    }
+  }, []);
 
   return (
     <div className="w-full min-h-screen flex flex-col bg-blue-900 px-4 py-10 md:px-20">
@@ -49,11 +59,8 @@ export default function jurusan() {
           </div>
           <div className="flex-1 text-start md:text-center ml-2 md:ml-0 mt-2 md:mt-0">
             <h1 className="font-bold text-xl md:text-2xl font-arial leading-none">
-              Silahkan pilih jurusan yang ingin kamu masuki
+              Silahkan pilih jurusan kedua
             </h1>
-            <p className="text-xs mt-2 text-neutral-800 md:text-sm">
-              Sebelum kamu memilih membuat akun, pilih jurusanmu dulu, yuk!
-            </p>
           </div>
         </div>
 

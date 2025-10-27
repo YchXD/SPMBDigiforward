@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-// Load secret key from environment variable
 const SECRET_KEY = process.env.JWT_SECRET || "your-secret-key";
 
-// Example: GET /api/auth/session
 export async function GET(req: NextRequest) {
   try {
-    // Read cookies (token)
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
@@ -16,8 +13,6 @@ export async function GET(req: NextRequest) {
         { status: 401 }
       );
     }
-
-    // Verify JWT
     const decoded = jwt.verify(token, SECRET_KEY) as { user: any };
 
     return NextResponse.json({

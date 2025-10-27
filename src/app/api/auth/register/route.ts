@@ -17,9 +17,9 @@ export async function POST(req: Request) {
       nisn,
       lemdik,
       jurusan,
+      jurusanbackup,
     } = body;
 
-    // Validate required fields
     if (
       !email ||
       !password ||
@@ -36,7 +36,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if school exists
     const [schoolRows] = await pool.execute(
       "SELECT id FROM sekolah WHERE kode_lemdik = ?",
       [lemdik]
@@ -51,7 +50,6 @@ export async function POST(req: Request) {
 
     const sekolah_id = school.id;
 
-    // Check for duplicate email
     const [emailRows] = await pool.execute("SELECT id FROM users WHERE email = ?", [email]);
     if ((emailRows as any[]).length > 0) {
       return NextResponse.json({
@@ -60,7 +58,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Check for duplicate nisn
     const [nisnRows] = await pool.execute("SELECT id FROM users WHERE nisn = ?", [nisn]);
     if ((nisnRows as any[]).length > 0) {
       return NextResponse.json({
@@ -69,26 +66,22 @@ export async function POST(req: Request) {
       });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert user
     const [insertResult]: any = await pool.execute(
-      `INSERT INTO users (email, password, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [email, hashedPassword, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan]
+      `INSERT INTO users (email, password, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan, jurusanbackup)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [email, hashedPassword, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan, jurusanbackup]
     );
 
     const newUserId = insertResult.insertId;
 
-    // Create JWT
     const token = jwt.sign(
       { user: { id: newUserId, email, nama } },
       JWT_SECRET,
       { expiresIn: "2h" }
     );
 
-    // Send cookie + response
     const response = NextResponse.json({
       success: true,
       message: "Pendaftaran berhasil",
@@ -102,7 +95,7 @@ export async function POST(req: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 2, // 2 hours
+      maxAge: 60 * 60 * 2, 
     });
 
     return response;

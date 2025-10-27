@@ -34,7 +34,7 @@ export async function GET() {
 
     const [userRows] = await pool.execute(
       `
-      SELECT u.id,u.email,u.nama,u.tanggal_lahir,u.jurusan, s.nama AS sekolah_nama
+      SELECT u.id,u.email,u.nama,u.tanggal_lahir,u.jurusan,u.jurusanbackup, s.nama AS sekolah_nama
       FROM users u
       LEFT JOIN sekolah s ON u.sekolah_id = s.id
       WHERE u.id = ?

@@ -20,7 +20,6 @@ async function getUserIdFromCookie() {
     }
 }
 
-// ✅ GET — fetch uploaded files
 export async function GET() {
     try {
         const userId = await getUserIdFromCookie();
@@ -43,7 +42,6 @@ export async function GET() {
     }
 }
 
-// ✅ POST — handle file upload
 export async function POST(req: NextRequest) {
     try {
         const userId = await getUserIdFromCookie();
@@ -103,7 +101,6 @@ export async function POST(req: NextRequest) {
                 // }
                 await del(oldFile.path_file)
 
-                // Insert or update
                 await pool.execute(
                     `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
                 VALUES (?, ?, ?, ?, ?) 
@@ -115,7 +112,6 @@ export async function POST(req: NextRequest) {
                 status = "pending"`,
                     [userId, jenis_berkas, originalName, url, file.size]
                 );
-                //console.log("🗃️ Insert success");
             } catch {
                 console.log("error check berkas route")
             }
@@ -147,7 +143,6 @@ export async function POST(req: NextRequest) {
                     fs.unlinkSync(path.join(process.cwd(), "public", oldFile.path_file));
                 }
 
-                // Insert or update
                 await pool.execute(
                     `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
                 VALUES (?, ?, ?, ?, ?) 
@@ -159,7 +154,6 @@ export async function POST(req: NextRequest) {
                 status = "pending"`,
                     [userId, jenis_berkas, originalName, relativePath, file.size]
                 );
-                //console.log("🗃️ Insert success");
             } finally {
                 
             }

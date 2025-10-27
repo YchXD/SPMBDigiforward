@@ -1,4 +1,3 @@
-// src/app/api/data_diri/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -82,7 +81,7 @@ export async function POST(req: NextRequest) {
         "SELECT id FROM data_diri WHERE user_id = ?",
         [userId]
       );
-      console.log(input, dateOnly)
+      //console.log(input, dateOnly)
 
       if (exists.length > 0) {
         await pool.execute(
@@ -113,7 +112,6 @@ export async function POST(req: NextRequest) {
           ]
         );
       } else {
-        // Insert new record
         await pool.execute(
           `INSERT INTO data_diri 
             (user_id, nisn, tempat_lahir, jenis_kelamin, agama, alamat, no_hp, asal_sekolah, 

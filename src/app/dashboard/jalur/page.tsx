@@ -6,6 +6,7 @@ import { time } from 'console';
 
 
 interface Jalur {
+  kuota: number;
   id: number;
   nama: string;
   deskripsi: string;
@@ -167,6 +168,7 @@ export default function JalurPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Jalur</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Periode</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Biaya</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Kuota</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Aksi</th>
               </tr>
@@ -183,6 +185,9 @@ export default function JalurPage() {
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900 break-words whitespace-normal">
                     {formatCurrency(jalur.biaya)}
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900 break-words whitespace-normal">
+                    {jalur.kuota}
                   </td>
                   <td className="px-6 py-4">
                     <span

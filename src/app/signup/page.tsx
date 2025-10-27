@@ -22,6 +22,7 @@ function SignUpContent() {
   //const lemdik = searchParams.get('lemdik');
   const lemdik = 2;
   const jurusan = searchParams.get('jurusan');
+  const jurusanbackup = searchParams.get('jurusanbackup');
 
   const [step, setStep] = useState(1);
   const [sekolahData, setSekolahData] = useState<Sekolah | null>(null);
@@ -39,7 +40,8 @@ function SignUpContent() {
     wa: '',
     nisn: '',
     lemdik: lemdik || '',
-    jurusan: jurusan || ''
+    jurusan: jurusan || '',
+    jurusanbackup: jurusanbackup || ''
   });
 
   const [waCode, setWaCode] = useState('+62');
@@ -380,7 +382,7 @@ function SignUpContent() {
 
                     {/* Nomor WhatsApp */}
                     <div>
-                      <p className="text-neutral-400 text-sm">Nomor WhatsApp Ortu/Wali</p>
+                      <p className="text-neutral-400 text-sm">Nomor WhatsApp Perseta Didik</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <select
                           value={waCode}
@@ -404,7 +406,7 @@ function SignUpContent() {
 
                     {/* nisn */}
                     <div>
-                      <p className="text-neutral-400 text-sm">nisn Calon Siswa</p>
+                      <p className="text-neutral-400 text-sm">NISN Calon Siswa</p>
                       <div className="flex items-center border border-neutral-400 rounded-lg overflow-hidden">
                         <i className="fa-solid fa-id-card p-2 h-full border-r border-neutral-400 text-neutral-400"></i>
                         <input
