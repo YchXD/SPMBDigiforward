@@ -88,18 +88,22 @@ export async function POST(req: NextRequest) {
                 access: "public", 
                 contentType: file.type || "application/octet-stream",
             });
+            console.log(url)
 
             try {
-                const [oldRows]: any = await pool.execute(
+
+                interface oldrow {
+                    path_file: string
+                }
+                const [oldRows] = await pool.execute(
                     "SELECT path_file FROM berkas WHERE user_id = ? AND jenis_berkas = ?",
                     [userId, jenis_berkas]
                 );
-                const oldFile = oldRows[0];
-                console.log(oldFile.path_file)
-                // if (oldFile && fs.existsSync(path.join(process.cwd(), "public", oldFile.path_file))) {
-                //     fs.unlinkSync(path.join(process.cwd(), "public", oldFile.path_file));
-                // }
-                await del(oldFile.path_file)
+                const oldFile = oldRows as oldrow[];
+                if ((oldRows as any[]).length > 0){
+                    await del(oldFile[0].path_file)
+                }
+                console.log(oldRows)
 
                 await pool.execute(
                     `INSERT INTO berkas (user_id, jenis_berkas, nama_file, path_file, ukuran_file) 
@@ -112,8 +116,8 @@ export async function POST(req: NextRequest) {
                 status = "pending"`,
                     [userId, jenis_berkas, originalName, url, file.size]
                 );
-            } catch {
-                console.log("error check berkas route")
+            } catch (e) {
+                console.log("error check berkas route:",e)
             }
 
             return NextResponse.json({ success: true, message: "Berkas berhasil diupload" });
