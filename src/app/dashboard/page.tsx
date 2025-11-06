@@ -162,7 +162,7 @@ export default function Dashboard() {
           </div>
           <div>
             <p className="text-sm text-gray-500">Status kelulusan</p>
-            <p className={`px-2 py-1 text-xs rounded-full w-fit ${userStatus.kelulusan.status === 'lulus' ? 'bg-green-100 text-green-800' : userStatus.kelulusan.status === 'tidak_lulus' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>{userStatus.kelulusan.status === 'lulus' ? 'Anda Lulus!' : userStatus.kelulusan.status === 'tidak_lulus' ? 'Anda tidak lulus' : 'Belum diumumkan'}</p>
+            <p className={`px-2 py-1 text-xs rounded-full w-fit ${userStatus.kelulusan?.status === 'lulus' ? 'bg-green-100 text-green-800' : userStatus.kelulusan?.status === 'tidak_lulus' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>{userStatus.kelulusan?.status === 'lulus' ? 'Anda Lulus!' : userStatus.kelulusan?.status === 'tidak_lulus' ? 'Anda tidak lulus' : 'Belum diumumkan'}</p>
           </div>
         </div>
       </div>
