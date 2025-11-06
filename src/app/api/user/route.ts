@@ -34,7 +34,7 @@ export async function GET() {
 
     const [userRows] = await pool.execute(
       `
-      SELECT u.id,u.email,u.nama,u.tanggal_lahir,u.jurusan,u.jurusanbackup, s.nama AS sekolah_nama
+      SELECT u.id,u.email,u.nama,u.tanggal_lahir,u.jurusan, s.nama AS sekolah_nama
       FROM users u
       LEFT JOIN sekolah s ON u.sekolah_id = s.id
       WHERE u.id = ?
@@ -83,6 +83,12 @@ export async function GET() {
     );
     const kartu_generated = (kartuRows as any[]).length > 0;
 
+    const [kelulusanRows] = await pool.execute(
+      `SELECT status FROM kelulusan WHERE user_id = ?`,
+      [safeParam(userId)]
+    );
+    const kelulusan = (kelulusanRows as any[])[0] ?? null;
+
     return NextResponse.json({
       success: true,
       data: {
@@ -92,6 +98,7 @@ export async function GET() {
         berkas_count,
         payment_status,
         kartu_generated,
+        kelulusan
       },
     });
   } catch (err: any) {

@@ -444,6 +444,7 @@ export default function PembayaranPage() {
           )}
         </div>
       </div>
+      <p className='text-center'>Memiliki masalah? hubungi kami <a href="bantuan" className='text-blue-600'>disini</a></p>
     </div>
   );
 }

@@ -3,15 +3,28 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
     Swal: any;
   }
 }
+interface Jurusan {
+  id: number,
+  nama: string,
+  deskripsi: string,
+  kuota: number,
+  images: string
+}
 
 export default function jurusan() {
+  const [jurusanList, setjurusanList] = useState<Jurusan[]>([]);
+
+  useEffect(() => {
+    fetchjurusan()
+  }, [])
+
   const handlejurusanSelection = (jurusan: string) => {
     if (jurusan == typeof String) {
 
@@ -26,16 +39,33 @@ export default function jurusan() {
         cancelButtonText: "Batal"
       }).then((result: any) => {
         if (result.isConfirmed) {
-          window.location.href = `/jurusankedua?jurusan=${jurusan}`;
+          window.location.href = `/signup?jurusan=${jurusan}`;
         }
       });
     } else {
       // Fallback jika SweetAlert belum loaded
       if (confirm(`Anda memilih jurusan ${jurusan}. Lanjutkan?`)) {
-        window.location.href = `/jurusankedua?jurusan=${jurusan}`;
+        window.location.href = `/signup?jurusan=${jurusan}`;
       }
     }
   };
+
+  const fetchjurusan = async () => {
+    try {
+      const response = await fetch("/api/jurusan", {
+        method: "GET",
+      });
+
+      const result = await response.json();
+      console.log(result)
+
+      if (result.success) {
+        setjurusanList(result.jurusan_rows);
+      }
+    } catch (error) {
+      console.error("Error fetching:", error);
+    }
+  }
 
   return (
     <div className="w-full min-h-screen flex flex-col bg-blue-900 px-4 py-10 md:px-20">
@@ -57,10 +87,43 @@ export default function jurusan() {
           </div>
         </div>
 
-        {/* Container Card */}
         <div className="w-full flex flex-wrap xl:flex-nowrap gap-4 justify-center mt-10">
-          {/* Card Akutansi */}
-          <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
+          {jurusanList.length === 0 ? (
+            <p>
+              Loading...
+            </p>
+          ) : (
+            <>
+              {jurusanList.map((j) => (
+                <div key={j.id} className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
+                          w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
+                  <div className="w-full h-48 md:h-52 lg:h-56">
+                    <img
+                      src={j.images}
+                      alt={j.nama}
+                      className="w-full h-full object-cover aspect-square rounded-t-2xl"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col items-center text-center p-4">
+                    <h3 className="font-bold text-2xl text-gray-900">{j.nama}</h3>
+                    <p className="text-lg xl:text-sm text-gray-600 mt-2 mb-3 h-28">
+                      {j.deskripsi}
+                    </p>
+                    <button
+                      onClick={() => handlejurusanSelection(j.nama)}
+                      className="cursor-pointer mt-auto w-full px-6 py-2 rounded-lg bg-[#4f5686] text-white hover:bg-[#41466e] transition disabled"
+                    >
+                      Pilih
+                    </button>
+                    <p className='text-sm'>
+                      Kuota: {j.kuota}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+          {/* <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
                           w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
             <div className="w-full h-48 md:h-52 lg:h-56">
               <img
@@ -82,7 +145,6 @@ export default function jurusan() {
               </button>
             </div>
           </div>
-          {/* Card DKV */}
           <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
                           w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
             <div className="w-full h-48 md:h-52 lg:h-56">
@@ -105,7 +167,6 @@ export default function jurusan() {
               </button>
             </div>
           </div>
-          {/* Card Perbankan */}
           <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
                           w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
             <div className="w-full h-48 md:h-52 lg:h-56">
@@ -128,8 +189,6 @@ export default function jurusan() {
               </button>
             </div>
           </div>
-
-          {/* Card RPL */}
           <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
                           w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
             <div className="w-full h-48 md:h-52 lg:h-56">
@@ -152,8 +211,6 @@ export default function jurusan() {
               </button>
             </div>
           </div>
-
-          {/* Card TKJ */}
           <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
                           w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
             <div className="w-full h-48 md:h-52 lg:h-56">
@@ -176,7 +233,6 @@ export default function jurusan() {
               </button>
             </div>
           </div>
-          {/* Card TM */}
           <div className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100
                           w-full sm:w-[50%] lg:w-[45%] xl:w-[18%] h-auto md:h-[420px] lg:h-[440px]">
             <div className="w-full h-48 md:h-52 lg:h-56">
@@ -198,7 +254,7 @@ export default function jurusan() {
                 Pilih
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

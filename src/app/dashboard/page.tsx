@@ -1,6 +1,8 @@
 'use client';
 
 import { Span } from 'next/dist/trace';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 interface UserStatus {
@@ -10,12 +12,15 @@ interface UserStatus {
   berkas_count: number;
   payment_status: string;
   kartu_generated: boolean;
+  kelulusan: any;
 }
 
 export default function Dashboard() {
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchUserStatus();
@@ -62,6 +67,15 @@ export default function Dashboard() {
       default: return false;
     }
   };
+  const menuItems = [
+    { href: 'a', label: 'RPL', enabled: true},
+    { href: 'b', label: 'TKJ', enabled: true},
+    { href: 'c', label: 'PB', enabled: true},
+    { href: 'd', label: 'AKL', enabled: true},
+    { href: 'e', label: 'TM', enabled: true},
+    { href: 'f', label: 'DKV', enabled: true},
+  ];
+  const isActive = menuItems.some((item) => pathname === item.href);
   return (
     <div className="space-y-6">
       {/* User Info Card */}
@@ -75,27 +89,80 @@ export default function Dashboard() {
             <p className="text-sm text-gray-500">Email</p>
             <p className="font-medium">{userStatus.user.email}</p>
           </div>
-          <div>
+          {/* <div>
             <p className="text-sm text-gray-500">Sekolah</p>
             <p className="font-medium">{userStatus.user.sekolah_nama || 'Belum dipilih'}</p>
-          </div>
+          </div> */}
           <div>
             <p className="text-sm text-gray-500">Jalur Pendaftaran</p>
             <p className="font-medium">{userStatus.jalur?.jalur_nama || 'Belum dipilih'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Jurusan</p>
-            <p className="font-medium">{userStatus.user.jurusan || 'Failed to reach'} / {userStatus.user.jurusanbackup || 'Kosong / Tidak dipilih'}</p>
+            <div className='flex flex-row'>
+              {/* <p className="font-medium uppercase">{(userStatus.user.jurusan).replaceAll('_', ' ') || 'Not Found'}</p> */}
+              {userStatus.user.jurusan === "tidak_diterima" ? (
+                <div className="relative w-full">
+                  {/* Dropdown button */}
+                  <button
+                    onClick={() => setOpen(!open)}
+                    className={`w-fit flex items-center justify-between rounded-lg text-gray-800`}
+                  >
+                    <span className="flex font-medium items-center gap-2">
+                      <span className='uppercase'>{(userStatus.user.jurusan).replaceAll('_', ' ') || 'Not Found'}</span>
+                    </span>
+                    <i className={`fa-solid fa-chevron-${open ? "up" : "down"} text-xs ml-2`} />
+                  </button>
+
+                  {/* Dropdown items */}
+                  {open && (
+                    <ul className="absolute mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50 space-y-1 p-2">
+                      <p className='font-medium pt-1 px-3'>Jurusan yang sebelumnya anda pilih tidak diterima, silahkan pilih jurusan baru</p>
+                      {menuItems.map((item) => (
+                        <li key={item.href}>
+                          <Link
+                            href={item.enabled ? item.href : "#"}
+                            className={`flex items-center gap-3 px-3 py-2 rounded transition-colors ${pathname === item.href
+                              ? "text-blue-900 bg-blue-50 font-medium"
+                              : item.enabled
+                                ? "text-gray-800 hover:bg-blue-50 hover:text-blue-900"
+                                : "text-gray-400 cursor-not-allowed"
+                              }`}
+                            onClick={(e) => {
+                              if (!item.enabled) {
+                                e.preventDefault();
+                              }
+                              setOpen(false);
+                            }}
+                          >
+                            <span>{item.label}</span>
+                            {!item.enabled && <i className="fa-solid fa-lock text-xs ml-auto"></i>}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <p className="font-medium uppercase">{(userStatus.user.jurusan).replaceAll('_', ' ') || 'Not Found'}</p>
+                </>
+              )}
+            </div>
           </div>
           <div>
             <p className="text-sm text-gray-500">Status Pembayaran</p>
             <span className={`px-2 py-1 text-xs rounded-full ${userStatus.payment_status === 'paid' ? 'bg-green-100 text-green-800' :
-                userStatus.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-gray-100 text-gray-800'
+              userStatus.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-gray-100 text-gray-800'
               }`}>
               {userStatus.payment_status === 'paid' ? 'Lunas' :
                 userStatus.payment_status === 'pending' ? 'Menunggu' : 'Belum Bayar'}
             </span>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Status kelulusan</p>
+            <p className={`px-2 py-1 text-xs rounded-full w-fit ${userStatus.kelulusan.status === 'lulus' ? 'bg-green-100 text-green-800' : userStatus.kelulusan.status === 'tidak_lulus' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>{userStatus.kelulusan.status === 'lulus' ? 'Anda Lulus!' : userStatus.kelulusan.status === 'tidak_lulus' ? 'Anda tidak lulus' : 'Belum diumumkan'}</p>
           </div>
         </div>
       </div>
@@ -209,7 +276,7 @@ export default function Dashboard() {
 
             <div className="grid md:grid-cols-2 text-sm leading-relaxed rounded-md overflow-hidden">
               <div className='h-full object-cover'>
-                <img src="/images/instruksi.png" alt="instruksi" className='h-full rounded-xl'/>
+                <img src="/images/instruksi.png" alt="instruksi" className='h-full rounded-xl' />
               </div>
               <div className='mt-3 md:ml-3'>
                 <p><span className="font-bold">1. Pilih Jalur:</span> Pilih jalur pendaftaran yang sesuai dengan periode dan biaya yang tersedia.</p>

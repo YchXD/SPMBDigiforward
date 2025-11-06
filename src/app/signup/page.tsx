@@ -22,7 +22,7 @@ function SignUpContent() {
   //const lemdik = searchParams.get('lemdik');
   const lemdik = 2;
   const jurusan = searchParams.get('jurusan');
-  const jurusanbackup = searchParams.get('jurusanbackup');
+  //const jurusanbackup = searchParams.get('jurusanbackup');
 
   const [step, setStep] = useState(1);
   const [sekolahData, setSekolahData] = useState<Sekolah | null>(null);
@@ -41,7 +41,7 @@ function SignUpContent() {
     nisn: '',
     lemdik: lemdik || '',
     jurusan: jurusan || '',
-    jurusanbackup: jurusanbackup || ''
+    //jurusanbackup: jurusanbackup || ''
   });
 
   const [waCode, setWaCode] = useState('+62');

@@ -14,7 +14,10 @@ const app = express();
 app.use(express.json());
 const server = http.createServer(app);
 const PORT = 4000;
-let WEBHOOK_URL = "https://admin.digiforward.dpdns.org/api/socket/webhook" || "http://localhost:3000/api/socket/webhook";
+const Server = require("socket.io");
+let WEBHOOK_URL =
+  "https://admin.digiforward.dpdns.org/api/socket/webhook" ||
+  "http://localhost:3000/api/socket/webhook";
 
 async function sendWithTimeout(client, jid, content, timeout = 8000) {
   const send = () =>
@@ -86,7 +89,11 @@ async function startWA() {
 
     const from = msg.key.remoteJid;
 
-    if (from === "status@broadcast" || from.endsWith("@newsletter") || from.endsWith("@g.us")) {
+    if (
+      from === "status@broadcast" ||
+      from.endsWith("@newsletter") ||
+      from.endsWith("@g.us")
+    ) {
       console.log("⏭️ Skipped status/newsletter message:", from);
       return;
     }
@@ -95,14 +102,13 @@ async function startWA() {
     const user = msg.pushName;
 
     let type = "text";
-    let message = null; 
-    let data = null; 
-    let mimetype= null; 
+    let message = null;
+    let data = null;
+    let mimetype = null;
     let quoted = null;
 
     if (msg.message?.conversation) {
       message = msg.message.conversation;
-
     } else if (msg.message?.extendedTextMessage) {
       message = msg.message.extendedTextMessage.text;
 
@@ -120,7 +126,6 @@ async function startWA() {
           quoted = "[unsupported message]";
         }
       }
-
     } else if (msg.message?.imageMessage) {
       type = "image";
       message = msg.message.imageMessage.caption || null;
@@ -132,7 +137,6 @@ async function startWA() {
       } catch (err) {
         console.error("❌ Failed to download image:", err);
       }
-
     } else if (msg.message?.stickerMessage) {
       type = "sticker";
       try {
@@ -161,8 +165,8 @@ async function startWA() {
         user,
         from,
         type,
-        message, 
-        data, 
+        message,
+        data,
         mimetype,
         quoted,
         timestamp,
@@ -252,7 +256,7 @@ async function startWA() {
         timestamp: new Date(),
       });
     } catch (err) {
-      console.error("❌ Send error:", err);
+      console.error("Send error:", err);
       res.status(500).json({
         success: false,
         error: err.message,
@@ -261,9 +265,37 @@ async function startWA() {
       });
     }
   });
+  const io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
+
+  io.on("connection", (socket) => {
+    console.log("Client connected:", socket.id);
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected:", socket.id);
+    });
+
+    socket.on("new_message", (msg) => {
+      console.log("Message received:", msg);
+      io.emit("new_message", msg);
+    });
+  });
+  app.use(express.json());
+
+  app.post("/api/emit_message", (req, res) => {
+    const payload = req.body;
+    io.emit("new_message", payload);
+    res.json({ success: true });
+  });
 }
 
-server.listen(PORT, () =>
-  console.log(`🚀 WhatsApp OTP service running on port ${PORT}`)
+server.listen(
+  PORT,
+  () => console.log(`🚀 WhatsApp OTP service running on port ${PORT}`),
+  console.log(`🚀 Socket.IO server running on port ${PORT}`)
 );
 startWA();

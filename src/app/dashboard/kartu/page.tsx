@@ -133,7 +133,7 @@ export default function KartuPage() {
 
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = `${kartu?.nama}_SPMB${kartu?.nomor_peserta}.png`;
+    link.download = `${kartu?.nama}_${kartu?.nomor_peserta}.png`;
     link.click();
   };
 

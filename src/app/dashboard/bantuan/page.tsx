@@ -45,32 +45,58 @@ export default function KartuPage() {
           </p>
 
           {/* White overlapping card */}
-          <div className="absolute left-4 right-4 -bottom-12 bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            {/* Left info */}
-            <div className="flex items-center gap-2 text-gray-700">
-              <i className="fa-solid fa-location-dot"></i>
-              <span>Admin SMK Antartika 2 Sidoarjo</span>
-            </div>
+          <div className="absolute left-4 right-4 -bottom-56 xl:-bottom-20 bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col items-center justify-between gap-4">
+            <div className='flex grid grid-cols-1 xl:grid-cols-3 w-full justify-between justify-items-center outline xl:outline-none outline-blue-400 rounded-xl xl:p-0 p-3 gap-4'>
+              {/* Left info */}
+              <div className="flex items-center gap-2 text-gray-700">
+                {/* <i className="fa-solid fa-circle-user"></i> */}
+                <span>Admin SMK Antartika 2 Sidoarjo</span>
+              </div>
 
-            {/* Phone */}
-            <div className="flex items-center gap-2 text-gray-700">
-              <i className="fa-solid fa-phone"></i>
-              <span>6285183103656</span>
-            </div>
+              {/* Email */}
+              <div className="flex items-center gap-2 text-gray-700">
+                <i className="fa-solid fa-square-envelope"></i>
+                <span>help.rekakarya@gmail.com</span>
+              </div>
 
-            {/* WhatsApp Button */}
-            <a
-              href="https://wa.me/6285183103656"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-500 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-600 transition"
-            >
-              <i className="fa-brands fa-whatsapp"></i>
-              WhatsApp
-            </a>
+              {/* Email button */}
+              <a
+                href="https://wa.me/6285183103656"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition"
+              >
+                <i className="fa-solid fa-envelope"></i>
+                Email
+              </a>
+            </div>
+            <div className='flex grid grid-cols-1 xl:grid-cols-3 w-full justify-between justify-items-center outline xl:outline-none outline-green-400 rounded-xl xl:p-0 p-3 gap-4'>
+              {/* Left info */}
+              <div className="flex items-center gap-2 text-gray-700">
+                {/* <i className="fa-solid fa-circle-user"></i> */}
+                <span>Admin SMK Antartika 2 Sidoarjo</span>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-center gap-2 text-gray-700">
+                <i className="fa-solid fa-phone"></i>
+                <span>6285183103656</span>
+              </div>
+
+              {/* WhatsApp Button */}
+              <a
+                href="https://wa.me/6285183103656"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-600 transition"
+              >
+                <i className="fa-brands fa-whatsapp"></i>
+                WhatsApp
+              </a>
+            </div>
           </div>
         </div>
-        <div className="relative -mt-6 bg-stone-50 border border-gray-200 shadow-sm rounded-lg p-6 min-h-35 sm:min-h-40 z-0"></div>
+        <div className="relative -mt-6 bg-stone-50 border border-gray-200 shadow-sm rounded-lg p-6 min-h-66 sm:min-h-40 z-0"></div>
       </div>
     </div>
   );

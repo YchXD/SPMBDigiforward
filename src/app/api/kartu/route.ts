@@ -87,7 +87,7 @@ export async function POST(req: Request) {
     }
 
     // Generate nomor peserta
-    const nomorPeserta = `${new Date().getFullYear()}-${String(userId).padStart(5, "0")}`;
+    const nomorPeserta = `SPMB${new Date().getFullYear()}-${String(userId).padStart(5, "0")}`;
 
     // Insert or update kartu
     await pool.execute(

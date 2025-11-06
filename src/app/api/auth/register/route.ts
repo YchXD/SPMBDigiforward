@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       nisn,
       lemdik,
       jurusan,
-      jurusanbackup,
+      // jurusanbackup,
     } = body;
 
     if (
@@ -69,9 +69,13 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const [insertResult]: any = await pool.execute(
-      `INSERT INTO users (email, password, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan, jurusanbackup)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [email, hashedPassword, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan, jurusanbackup]
+      `INSERT INTO users (email, password, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [email, hashedPassword, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan]
+    );
+    await pool.execute(
+      "UPDATE jalur SET kuota = kuota - 1 WHERE nama = ?",
+      [jurusan]
     );
 
     const newUserId = insertResult.insertId;
