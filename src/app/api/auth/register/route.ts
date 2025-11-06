@@ -74,7 +74,7 @@ export async function POST(req: Request) {
       [email, hashedPassword, nama, tanggal_lahir, wa, nisn, sekolah_id, jurusan]
     );
     await pool.execute(
-      "UPDATE jalur SET kuota = kuota - 1 WHERE nama = ?",
+      "UPDATE jurusan SET kuota = kuota - 1 WHERE nama = ?",
       [jurusan]
     );
 
